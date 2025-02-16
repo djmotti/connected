@@ -79,11 +79,24 @@
             top: 10px;
             left: 10px;
         }
+        .language-switcher button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            background: white;
+            color: black;
+        }
+        .language-switcher button:hover {
+            background: #ddd;
+        }
     </style>
     <script>
         function switchLanguage(lang) {
             document.documentElement.lang = lang;
-            alert('השפה שונתה ל-' + (lang === 'en' ? 'English' : 'Русский'));
+            document.getElementById('main-content').style.direction = (lang === 'he') ? 'rtl' : 'ltr';
         }
     </script>
 </head>
