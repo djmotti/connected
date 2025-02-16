@@ -63,17 +63,6 @@
         button:hover {
             background: #218838;
         }
-        .accessibility-widget {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #ffcc00;
-            color: black;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
         .language-switcher {
             position: fixed;
             top: 10px;
@@ -92,11 +81,41 @@
         .language-switcher button:hover {
             background: #ddd;
         }
+        .accessibility-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #ffcc00;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .accessibility-menu {
+            display: none;
+            position: fixed;
+            bottom: 60px;
+            left: 20px;
+            background: white;
+            color: black;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
     </style>
     <script>
         function switchLanguage(lang) {
             document.documentElement.lang = lang;
             document.getElementById('main-content').style.direction = (lang === 'he') ? 'rtl' : 'ltr';
+        }
+        function toggleAccessibilityMenu() {
+            var menu = document.getElementById("accessibilityMenu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
         }
     </script>
 </head>
@@ -133,6 +152,13 @@
         </form>
     </div>
     
-    <div class="accessibility-widget" onclick="alert('נגישות מופעלת!');">🔍 אפשרויות נגישות</div>
+    <div class="accessibility-widget" onclick="toggleAccessibilityMenu()">🔍 אפשרויות נגישות</div>
+    <div id="accessibilityMenu" class="accessibility-menu">
+        <p>אפשרויות נגישות:</p>
+        <button onclick="document.body.style.fontSize='larger'">🔠 הגדלת טקסט</button>
+        <button onclick="document.body.style.fontSize='smaller'">🔡 הקטנת טקסט</button>
+        <button onclick="document.body.style.backgroundColor='black'; document.body.style.color='white'">⚫ מצב כהה</button>
+        <button onclick="document.body.style.backgroundColor='white'; document.body.style.color='black'">⚪ מצב בהיר</button>
+    </div>
 </body>
 </html>
