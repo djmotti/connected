@@ -63,22 +63,39 @@
         button:hover {
             background: #218838;
         }
-        a.skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: yellow;
+        .accessibility-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #ffcc00;
             color: black;
             padding: 10px;
-            z-index: 100;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
         }
-        a.skip-link:focus {
-            top: 0;
+        .language-switcher {
+            position: fixed;
+            top: 10px;
+            left: 10px;
         }
     </style>
+    <script>
+        function switchLanguage(lang) {
+            document.documentElement.lang = lang;
+            alert('השפה שונתה ל-' + (lang === 'en' ? 'English' : 'Русский'));
+        }
+    </script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
+    
+    <div class="language-switcher">
+        <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
+        <button onclick="switchLanguage('en')">🇬🇧 English</button>
+        <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
+    </div>
+    
     <div class="container" id="main-content">
         <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
         <p>✔️ חיבור מהיר, יציב ואמין<br>✔️ פתרונות רשת מתקדמים בהתאמה אישית<br>✔️ שירות איכותי ומקצועי</p>
@@ -102,5 +119,7 @@
             <button type="submit" aria-label="שלח הודעה">📩 שלח הודעה</button>
         </form>
     </div>
+    
+    <div class="accessibility-widget" onclick="alert('נגישות מופעלת!');">🔍 אפשרויות נגישות</div>
 </body>
 </html>
