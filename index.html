@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>שירותי התקנת רשת - חיבור יציב ואמין</title>
+  <title>התקנת רשת מקצועית - פתרונות תקשורת לבית ולעסק</title>
+  <meta name="description" content="התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים. שירות אמין ומהיר בכל רחבי הארץ." />
   <style>
-    /* הגדרות בסיס */
-    * {
-      box-sizing: border-box;
+    :root {
+      --main-bg: url('https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg');
     }
     body {
       margin: 0;
@@ -17,7 +17,7 @@
       direction: rtl;
       color: #fff;
       transition: background 0.3s, color 0.3s;
-      background-color: #242424; /* לגיבוי כאשר תמונת הרקע לא נטענת */
+      background-color: #242424;
     }
 
     /* דלג לתוכן */
@@ -35,7 +35,6 @@
       top: 0;
     }
 
-    /* אזור כותרת (header) */
     header {
       position: relative;
       display: block;
@@ -72,25 +71,43 @@
       outline: none;
     }
 
-    /* אזור תוכן עיקרי (main) */
+    /* תפריט ניווט עליון */
+    nav {
+      background: rgba(0,0,0,0.7);
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    nav a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 6px 10px;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background: #ffcc00;
+      color: #333;
+      border-radius: 5px;
+    }
+
     main {
       max-width: 700px;
-      margin: -80px auto 0 auto; /* מעלה את הקופסה טיפה מעל התמונה */
+      margin: -70px auto 0 auto; /* מעלה את הקופסה טיפה מעל התמונה */
       padding: 20px;
       background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px); /* אפקט טשטוש מאחורי הקופסה */
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
       border-radius: 10px;
       position: relative;
     }
-
     main h1 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
-
     .btn {
-      display: block;
+      display: inline-block;
       margin: 10px auto;
       padding: 12px 18px;
       background: #ffcc00;
@@ -100,7 +117,6 @@
       font-size: 1.1rem;
       font-weight: bold;
       transition: background 0.3s;
-      width: fit-content;
     }
     .btn:hover {
       background: #ffaa00;
@@ -175,7 +191,7 @@
       margin-top: 5px;
     }
 
-    /* מצבי נגישות שונים (נשארים כפי שהיו, רק שינויים קלים של מראה) */
+    /* מצבי נגישות */
     .high-contrast {
       background-color: #000 !important;
       color: #ff0 !important;
@@ -225,6 +241,25 @@
       padding: 10px 0;
       margin-top: 30px;
     }
+
+    /* עיצוב לאזורי המשנה (אודות, שירותים) */
+    section {
+      text-align: right; /* כדי ליישר את הטקסט לימין */
+      margin: 20px 0;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 5px;
+    }
+    section h2 {
+      color: #ffcc00;
+      margin-top: 0;
+      text-align: right; /* כותרת גם מימין */
+    }
+    .content {
+      line-height: 1.6;
+      text-align: right; /* הטקסט בתוך אודות ושירותים, מימין לשמאל */
+    }
+
   </style>
   <script>
     let currentFontSize = 100;
@@ -269,19 +304,19 @@
     }
 
     function toggleHighContrast() {
-      document.body.classList.remove('inverted', 'grayscale', 'blackwhite');
+      document.body.classList.remove('inverted','grayscale','blackwhite');
       document.body.classList.toggle('high-contrast');
     }
     function toggleInverse() {
-      document.body.classList.remove('high-contrast', 'grayscale', 'blackwhite');
+      document.body.classList.remove('high-contrast','grayscale','blackwhite');
       document.body.classList.toggle('inverted');
     }
     function toggleGrayScale() {
-      document.body.classList.remove('high-contrast', 'inverted', 'blackwhite');
+      document.body.classList.remove('high-contrast','inverted','blackwhite');
       document.body.classList.toggle('grayscale');
     }
     function toggleBlackWhite() {
-      document.body.classList.remove('high-contrast', 'inverted', 'grayscale');
+      document.body.classList.remove('high-contrast','inverted','grayscale');
       document.body.classList.toggle('blackwhite');
     }
 
@@ -351,16 +386,9 @@
 
     function resetAccessibility() {
       document.body.classList.remove(
-        'high-contrast',
-        'inverted',
-        'grayscale',
-        'blackwhite',
-        'readable-font',
-        'highlight-headings',
-        'highlight-links',
-        'no-animations',
-        'big-cursor-dark',
-        'big-cursor-light'
+        'high-contrast','inverted','grayscale','blackwhite',
+        'readable-font','highlight-headings','highlight-links',
+        'no-animations','big-cursor-dark','big-cursor-light'
       );
       document.body.style.fontSize = '';
       document.body.style.wordSpacing = '';
@@ -383,17 +411,57 @@
     </div>
     <img
       src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg"
-      alt=""
+      alt="התקנת רשת מקצועית בבית ובעסק"
       class="hero-img"
-      aria-hidden="true"
     />
+    <!-- תפריט ניווט פשוט -->
+    <nav role="navigation" aria-label="תפריט ראשי">
+      <a href="#main-content">דף הבית</a>
+      <a href="#about">אודות</a>
+      <a href="#services">שירותים</a>
+    </nav>
   </header>
 
   <main role="main" id="main-content">
     <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
+    <p>
+      ברוכים הבאים לאתר שלנו! אנו מתמחים בכל פתרונות התקשורת:
+      <strong>התקנת רשת ביתית</strong>, פתרונות <strong>Wi-Fi בחניונים</strong>,
+      שדרוג ותחזוקה של תשתיות תקשורת, ועוד. המטרה שלנו היא לספק חיבור יציב,
+      מהיר ואמין לכל לקוח.
+    </p>
     <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ">📲 צור קשר מיידי בוואטסאפ</a>
     <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית">📞 התקשר עכשיו</a>
     <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני">📧 שלח הודעה במייל</a>
+
+    <section id="about">
+      <h2>אודות</h2>
+      <div class="content">
+        <p>
+          אנחנו צוות מקצועי ובעל ניסיון רב בתחום <strong>התקשורת</strong>
+          והחשמל. את הפעילות שלנו התחלנו מתוך הרצון לתת מענה כולל ללקוחות,
+          החל מהתקנת קווי רשת ופתרונות Wi-Fi ועד לפרויקטים מורכבים של ניהול
+          תשתיות באתרים מסחריים וחניונים גדולים. מה שמייחד אותנו הוא השירות
+          האישי, המהיר והמקצועי לכל לקוח.
+        </p>
+      </div>
+    </section>
+
+    <section id="services">
+      <h2>שירותים</h2>
+      <div class="content">
+        <ul>
+          <li><strong>התקנת רשת ביתית</strong> - חיבור מהיר ואמין בכל חדר</li>
+          <li><strong>פתרונות Wi-Fi לחניונים</strong> - פריסה חכמה עם ניהול עומסים</li>
+          <li><strong>שדרוג תשתיות</strong> - החלפת כבלים, מתגים וראוטרים</li>
+          <li><strong>אבחון וייעוץ</strong> - תכנון מערכת תקשורת למשרדים ולבתים פרטיים</li>
+        </ul>
+        <p>
+          אנו מאמינים בהתאמה אישית לכל לקוח, ולכן תמיד נשמח לייעץ ולמצוא יחד
+          את הפתרון המושלם עבורך.
+        </p>
+      </div>
+    </section>
   </main>
 
   <!-- כפתור נגישות כ-button -->
