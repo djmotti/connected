@@ -99,8 +99,8 @@
       outline-offset: 2px;
     }
 
-    /* כפתור הנגישות */
-    .accessibility-widget {
+    /* כפתור הנגישות - מעכשיו button במקום div */
+    .accessibility-button {
       position: fixed;
       bottom: 20px;
       left: 20px;
@@ -112,11 +112,13 @@
       cursor: pointer;
       transition: transform 0.3s;
       z-index: 9999;
+      border: none; /* הסרה של סטייל ברירת מחדל של button */
     }
-    .accessibility-widget:hover,
-    .accessibility-widget:focus {
+    .accessibility-button:hover,
+    .accessibility-button:focus {
       transform: scale(1.1);
-      outline: none;
+      outline: 2px solid #333;
+      outline-offset: 2px;
     }
 
     /* תפריט הנגישות */
@@ -202,10 +204,12 @@
       cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
     }
 
+    /* Footer עם ניגודיות גבוהה יותר */
     footer {
       text-align: center;
-      color: #ccc;
-      margin-top: 20px;
+      background: #333;    /* רקע כהה */
+      color: #eee;        /* כיתוב בהיר כדי להשיג ניגודיות טובה */
+      font-size: 14px;
       padding: 10px 0;
     }
   </style>
@@ -360,11 +364,13 @@
       <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
     </div>
     
-    <!-- תמונה ראשית דקורטיבית (אם אינה חיונית, alt ריק) -->
-    <img src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg" 
-         alt="" 
-         class="hero-img" 
-         aria-hidden="true">
+    <!-- תמונה ראשית דקורטיבית (alt ריק אם היא רק לקישוט) -->
+    <img 
+      src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg"
+      alt=""
+      class="hero-img"
+      aria-hidden="true"
+    >
   </header>
 
   <!-- תוכן עיקרי -->
@@ -376,13 +382,22 @@
     <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני">📧 שלח הודעה במייל</a>
   </main>
 
-  <!-- כפתור לפתיחת תפריט הנגישות -->
-  <div class="accessibility-widget" onclick="toggleAccessibilityMenu()" aria-label="פתח תפריט נגישות">
+  <!-- כפתור לפתיחת תפריט הנגישות (עכשיו button) -->
+  <button 
+    type="button"
+    class="accessibility-button"
+    aria-label="פתח תפריט נגישות"
+    onclick="toggleAccessibilityMenu()"
+  >
     🔍 אפשרויות נגישות
-  </div>
+  </button>
 
   <!-- תפריט הנגישות -->
-  <div id="accessibilityMenu" class="accessibility-menu" aria-label="תפריט נגישות">
+  <div 
+    id="accessibilityMenu"
+    class="accessibility-menu"
+    aria-label="תפריט נגישות"
+  >
     <h2>כלי נגישות</h2>
     <!-- עיצוב צבעים וניגודיות -->
     <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
