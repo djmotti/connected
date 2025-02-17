@@ -1,376 +1,393 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>שירותי התקנת רשת - חיבור יציב ואמין</title>
-    <style>
-        /* בסיס */
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            direction: rtl;
-            background: url('https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            transition: background 0.3s, color 0.3s;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-        }
-        .btn {
-            display: block;
-            margin: 10px auto;
-            padding: 12px;
-            background: #ffcc00;
-            color: #333;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 18px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: #ffaa00;
-        }
-        
-        /* כפתור הנגישות */
-        .accessibility-widget {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #ffcc00;
-            color: black;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s;
-            z-index: 9999;
-        }
-        .accessibility-widget:hover {
-            transform: scale(1.1);
-        }
-        
-        /* תפריט הנגישות */
-        .accessibility-menu {
-            display: none;
-            position: fixed;
-            bottom: 60px;
-            left: 20px;
-            background: white;
-            color: black;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-            width: 280px;
-            text-align: right;
-            z-index: 9999;
-        }
-        .accessibility-menu h2 {
-            margin: 0 0 10px;
-            font-size: 18px;
-            text-align: center;
-        }
-        .accessibility-menu .slider-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 5px 0;
-        }
-        .accessibility-menu button {
-            width: 100%;
-            margin: 5px 0;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            background: #eee;
-            transition: background 0.3s;
-        }
-        .accessibility-menu button:hover {
-            background: #ccc;
-        }
-        .accessibility-menu input[type="range"] {
-            width: 100px;
-        }
-        .accessibility-menu .row {
-            display: flex;
-            gap: 5px;
-        }
-        
-        /* מצבים שונים לנגישות */
-        .high-contrast {
-            background-color: black !important;
-            color: yellow !important;
-        }
-        .inverted {
-            filter: invert(1) hue-rotate(180deg);
-        }
-        .grayscale {
-            filter: grayscale(1);
-        }
-        .blackwhite {
-            background-color: white !important;
-            color: black !important;
-        }
-        
-        /* גופן קריא יותר */
-        .readable-font {
-            font-family: sans-serif !important;
-        }
-        
-        /* כותרות מודגשות */
-        .highlight-headings h1,
-        .highlight-headings h2,
-        .highlight-headings h3,
-        .highlight-headings h4 {
-            background: #ffcc00;
-            color: #333 !important;
-            padding: 5px;
-            display: inline-block;
-        }
-        
-        /* קישורים מודגשים */
-        .highlight-links a {
-            color: blue !important;
-            text-decoration: underline !important;
-        }
-        
-        /* ביטול אנימציות */
-        .no-animations * {
-            transition: none !important;
-            animation: none !important;
-        }
-        
-        /* סמנים גדולים */
-        .big-cursor-dark {
-            cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23000' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
-        }
-        .big-cursor-light {
-            cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שירותי התקנת רשת - חיבור יציב ואמין</title>
+  <style>
+    :root {
+      --main-bg: url('https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg');
+    }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      direction: rtl;
+      background: var(--main-bg) no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      transition: background 0.3s, color 0.3s;
+    }
 
-        /* כפתורי שפה - בפינה העליונה משמאל/ימין (לפי צורך) */
-        .language-switcher {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 9999;
-        }
-        .language-switcher button {
-            margin: 5px;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            background: #ffcc00;
-            color: #333;
-            transition: background 0.3s;
-        }
-        .language-switcher button:hover {
-            background: #ffaa00;
-        }
-    </style>
-    <script>
-        let currentFontSize = 100; // אחוז הגודל ההתחלתי
-        let currentWordSpacing = 0; // רווח מילים
-        let currentLetterSpacing = 0; // רווח אותיות
-        let isReadableFont = false;
-        let headingsHighlighted = false;
-        let linksHighlighted = false;
-        let noAnimations = false;
-        let bigCursor = '';
-        let currentLanguage = 'he'; // ברירת מחדל עברית
+    /* דלג לתוכן */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #ffcc00;
+      color: #333;
+      padding: 8px;
+      text-decoration: none;
+      z-index: 9999;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
 
-        function toggleAccessibilityMenu() {
-            const menu = document.getElementById("accessibilityMenu");
-            menu.style.display = (menu.style.display === "block") ? "none" : "block";
-        }
-        
-        /* פונקציית החלפת שפה */
-        function switchLanguage(lang) {
-            currentLanguage = lang;
-            document.documentElement.lang = lang;
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .btn {
+      display: block;
+      margin: 10px auto;
+      padding: 12px;
+      background: #ffcc00;
+      color: #333;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #ffaa00;
+    }
+    .btn:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
 
-            // שינוי כיוון טקסט בהתאם לשפה (רק בעברית rtl, אחרת ltr):
-            if (lang === 'he') {
-                document.body.style.direction = 'rtl';
-            } else {
-                document.body.style.direction = 'ltr';
-            }
-        }
+    /* כפתורי שפה */
+    .language-switcher {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 9999;
+    }
+    .language-switcher button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #ffcc00;
+      color: #333;
+      transition: background 0.3s;
+    }
+    .language-switcher button:hover,
+    .language-switcher button:focus {
+      background: #ffaa00;
+      outline: none;
+    }
 
-        /* הקראת טקסט בהתאם לשפה שנבחרה */
-        function speakText() {
-            let msg = new SpeechSynthesisUtterance(document.body.innerText);
-            msg.lang = currentLanguage; // שפת ההקראה
-            window.speechSynthesis.speak(msg);
-        }
-        
-        function toggleHighContrast() {
-            // מנקים מצבים אחרים
-            document.body.classList.remove('inverted','grayscale','blackwhite');
-            document.body.classList.toggle('high-contrast');
-        }
-        function toggleInverse() {
-            document.body.classList.remove('high-contrast','grayscale','blackwhite');
-            document.body.classList.toggle('inverted');
-        }
-        function toggleGrayScale() {
-            document.body.classList.remove('high-contrast','inverted','blackwhite');
-            document.body.classList.toggle('grayscale');
-        }
-        function toggleBlackWhite() {
-            document.body.classList.remove('high-contrast','inverted','grayscale');
-            document.body.classList.toggle('blackwhite');
-        }
-        
-        function adjustFontSize(value) {
-            currentFontSize += value;
-            if(currentFontSize < 50) currentFontSize = 50;
-            if(currentFontSize > 200) currentFontSize = 200;
-            document.body.style.fontSize = currentFontSize + '%';
-        }
-        function adjustWordSpacing(value) {
-            currentWordSpacing += value;
-            document.body.style.wordSpacing = currentWordSpacing + 'px';
-        }
-        function adjustLetterSpacing(value) {
-            currentLetterSpacing += value;
-            document.body.style.letterSpacing = currentLetterSpacing + 'px';
-        }
-        function toggleReadableFont() {
-            isReadableFont = !isReadableFont;
-            if(isReadableFont) {
-                document.body.classList.add('readable-font');
-            } else {
-                document.body.classList.remove('readable-font');
-            }
-        }
-        function toggleHighlightHeadings() {
-            headingsHighlighted = !headingsHighlighted;
-            if(headingsHighlighted) {
-                document.body.classList.add('highlight-headings');
-            } else {
-                document.body.classList.remove('highlight-headings');
-            }
-        }
-        function toggleHighlightLinks() {
-            linksHighlighted = !linksHighlighted;
-            if(linksHighlighted) {
-                document.body.classList.add('highlight-links');
-            } else {
-                document.body.classList.remove('highlight-links');
-            }
-        }
-        function toggleNoAnimations() {
-            noAnimations = !noAnimations;
-            if(noAnimations) {
-                document.body.classList.add('no-animations');
-            } else {
-                document.body.classList.remove('no-animations');
-            }
-        }
-        
-        function toggleBigCursorDark() {
-            document.body.classList.remove('big-cursor-light');
-            if(document.body.classList.contains('big-cursor-dark')) {
-                document.body.classList.remove('big-cursor-dark');
-            } else {
-                document.body.classList.add('big-cursor-dark');
-            }
-        }
-        function toggleBigCursorLight() {
-            document.body.classList.remove('big-cursor-dark');
-            if(document.body.classList.contains('big-cursor-light')) {
-                document.body.classList.remove('big-cursor-light');
-            } else {
-                document.body.classList.add('big-cursor-light');
-            }
-        }
-        
-        function resetAccessibility() {
-            document.body.classList.remove(
-                'high-contrast','inverted','grayscale','blackwhite',
-                'readable-font','highlight-headings','highlight-links',
-                'no-animations','big-cursor-dark','big-cursor-light'
-            );
-            document.body.style.fontSize = '';
-            document.body.style.wordSpacing = '';
-            document.body.style.letterSpacing = '';
-            currentFontSize = 100;
-            currentWordSpacing = 0;
-            currentLetterSpacing = 0;
-        }
-    </script>
+    /* כפתור הנגישות */
+    .accessibility-widget {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #ffcc00;
+      color: black;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+      z-index: 9999;
+    }
+    .accessibility-widget:hover,
+    .accessibility-widget:focus {
+      transform: scale(1.1);
+      outline: none;
+    }
+
+    /* תפריט הנגישות */
+    .accessibility-menu {
+      display: none;
+      position: fixed;
+      bottom: 60px;
+      left: 20px;
+      background: white;
+      color: black;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      width: 280px;
+      text-align: right;
+      z-index: 9999;
+    }
+    .accessibility-menu h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      text-align: center;
+    }
+    .accessibility-menu button {
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #eee;
+      transition: background 0.3s;
+    }
+    .accessibility-menu button:hover,
+    .accessibility-menu button:focus {
+      background: #ccc;
+      outline: none;
+    }
+
+    /* מצבי נגישות שונים... (כבר היו בקוד) */
+    .high-contrast {
+      background-color: black !important;
+      color: yellow !important;
+    }
+    .inverted {
+      filter: invert(1) hue-rotate(180deg);
+    }
+    .grayscale {
+      filter: grayscale(1);
+    }
+    .blackwhite {
+      background-color: white !important;
+      color: black !important;
+    }
+    .readable-font {
+      font-family: sans-serif !important;
+    }
+    .highlight-headings h1,
+    .highlight-headings h2,
+    .highlight-headings h3,
+    .highlight-headings h4 {
+      background: #ffcc00;
+      color: #333 !important;
+      padding: 5px;
+      display: inline-block;
+    }
+    .highlight-links a {
+      color: blue !important;
+      text-decoration: underline !important;
+    }
+    .no-animations * {
+      transition: none !important;
+      animation: none !important;
+    }
+    .big-cursor-dark {
+      cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23000' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
+    }
+    .big-cursor-light {
+      cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
+    }
+  </style>
+  <script>
+    let currentFontSize = 100; 
+    let currentWordSpacing = 0; 
+    let currentLetterSpacing = 0; 
+    let isReadableFont = false;
+    let headingsHighlighted = false;
+    let linksHighlighted = false;
+    let noAnimations = false;
+    let bigCursor = '';
+    let currentLanguage = 'he'; // ברירת מחדל עברית
+
+    function toggleAccessibilityMenu() {
+      const menu = document.getElementById("accessibilityMenu");
+      menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    // הוספנו "דלג לתוכן" בתחילת ה־body
+    // כשלוחצים על skip-link, מגיעים לאלמנט #main-content
+    
+    /* בורר שפה */
+    function switchLanguage(lang) {
+      currentLanguage = lang;
+      document.documentElement.lang = lang;
+      // כיוון טקסט
+      if (lang === 'he') {
+        document.body.style.direction = 'rtl';
+      } else {
+        document.body.style.direction = 'ltr';
+      }
+    }
+
+    // הקראת טקסט לפי השפה שנבחרה
+    function speakText() {
+      let msg = new SpeechSynthesisUtterance(document.body.innerText);
+      msg.lang = currentLanguage; 
+      window.speechSynthesis.speak(msg);
+    }
+
+    // פונקציה להכרחה להקריא בעברית
+    function speakTextHebrew() {
+      let msg = new SpeechSynthesisUtterance(document.body.innerText);
+      msg.lang = "he-IL";
+      window.speechSynthesis.speak(msg);
+    }
+
+    function toggleHighContrast() {
+      document.body.classList.remove('inverted','grayscale','blackwhite');
+      document.body.classList.toggle('high-contrast');
+    }
+    function toggleInverse() {
+      document.body.classList.remove('high-contrast','grayscale','blackwhite');
+      document.body.classList.toggle('inverted');
+    }
+    function toggleGrayScale() {
+      document.body.classList.remove('high-contrast','inverted','blackwhite');
+      document.body.classList.toggle('grayscale');
+    }
+    function toggleBlackWhite() {
+      document.body.classList.remove('high-contrast','inverted','grayscale');
+      document.body.classList.toggle('blackwhite');
+    }
+
+    function adjustFontSize(value) {
+      currentFontSize += value;
+      if(currentFontSize < 50) currentFontSize = 50;
+      if(currentFontSize > 200) currentFontSize = 200;
+      document.body.style.fontSize = currentFontSize + '%';
+    }
+    function adjustWordSpacing(value) {
+      currentWordSpacing += value;
+      document.body.style.wordSpacing = currentWordSpacing + 'px';
+    }
+    function adjustLetterSpacing(value) {
+      currentLetterSpacing += value;
+      document.body.style.letterSpacing = currentLetterSpacing + 'px';
+    }
+    function toggleReadableFont() {
+      isReadableFont = !isReadableFont;
+      if(isReadableFont) {
+        document.body.classList.add('readable-font');
+      } else {
+        document.body.classList.remove('readable-font');
+      }
+    }
+    function toggleHighlightHeadings() {
+      headingsHighlighted = !headingsHighlighted;
+      if(headingsHighlighted) {
+        document.body.classList.add('highlight-headings');
+      } else {
+        document.body.classList.remove('highlight-headings');
+      }
+    }
+    function toggleHighlightLinks() {
+      linksHighlighted = !linksHighlighted;
+      if(linksHighlighted) {
+        document.body.classList.add('highlight-links');
+      } else {
+        document.body.classList.remove('highlight-links');
+      }
+    }
+    function toggleNoAnimations() {
+      noAnimations = !noAnimations;
+      if(noAnimations) {
+        document.body.classList.add('no-animations');
+      } else {
+        document.body.classList.remove('no-animations');
+      }
+    }
+
+    function toggleBigCursorDark() {
+      document.body.classList.remove('big-cursor-light');
+      if(document.body.classList.contains('big-cursor-dark')) {
+        document.body.classList.remove('big-cursor-dark');
+      } else {
+        document.body.classList.add('big-cursor-dark');
+      }
+    }
+    function toggleBigCursorLight() {
+      document.body.classList.remove('big-cursor-dark');
+      if(document.body.classList.contains('big-cursor-light')) {
+        document.body.classList.remove('big-cursor-light');
+      } else {
+        document.body.classList.add('big-cursor-light');
+      }
+    }
+
+    function resetAccessibility() {
+      document.body.classList.remove(
+        'high-contrast','inverted','grayscale','blackwhite',
+        'readable-font','highlight-headings','highlight-links',
+        'no-animations','big-cursor-dark','big-cursor-light'
+      );
+      document.body.style.fontSize = '';
+      document.body.style.wordSpacing = '';
+      document.body.style.letterSpacing = '';
+      currentFontSize = 100;
+      currentWordSpacing = 0;
+      currentLetterSpacing = 0;
+    }
+  </script>
 </head>
 <body>
-    <!-- בורר שפה -->
-    <div class="language-switcher">
-        <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
-        <button onclick="switchLanguage('en')">🇬🇧 English</button>
-        <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
+  <!-- דלג לתוכן -->
+  <a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
+
+  <!-- בורר שפה -->
+  <div class="language-switcher">
+    <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
+    <button onclick="switchLanguage('en')">🇬🇧 English</button>
+    <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
+  </div>
+
+  <div class="container" id="main-content">
+    <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
+    <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ">📲 צור קשר מיידי בוואטסאפ</a>
+    <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית">📞 התקשר עכשיו</a>
+    <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני">📧 שלח הודעה במייל</a>
+  </div>
+
+  <!-- כפתור לפתיחת תפריט הנגישות -->
+  <div class="accessibility-widget" onclick="toggleAccessibilityMenu()" aria-label="פתח תפריט נגישות">🔍 אפשרויות נגישות</div>
+
+  <!-- תפריט הנגישות -->
+  <div id="accessibilityMenu" class="accessibility-menu">
+    <h2>כלי נגישות</h2>
+    <!-- עיצוב צבעים וניגודיות -->
+    <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
+    <button onclick="toggleInverse()">ניגודיות הפוכה</button>
+    <button onclick="toggleGrayScale()">גווני אפור</button>
+    <button onclick="toggleBlackWhite()">שחור לבן</button>
+    
+    <!-- שינוי גודל גופן / ריווח -->
+    <div class="row">
+      <button onclick="adjustFontSize(-10)">- גודל גופן</button>
+      <button onclick="adjustFontSize(10)">+ גודל גופן</button>
+    </div>
+    <div class="row">
+      <button onclick="adjustWordSpacing(-1)">- רווח מילים</button>
+      <button onclick="adjustWordSpacing(1)">+ רווח מילים</button>
+    </div>
+    <div class="row">
+      <button onclick="adjustLetterSpacing(-1)">- רווח אותיות</button>
+      <button onclick="adjustLetterSpacing(1)">+ רווח אותיות</button>
     </div>
 
-    <div class="container" id="main-content">
-        <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
-        <a href="https://wa.me/0525304298" class="btn">📲 צור קשר מיידי בוואטסאפ</a>
-        <a href="tel:0525304298" class="btn">📞 התקשר עכשיו</a>
-        <a href="mailto:voltech.mk@gmail.com" class="btn">📧 שלח הודעה במייל</a>
-    </div>
+    <!-- פונקציות מתקדמות -->
+    <button onclick="toggleReadableFont()">גופן קריא</button>
+    <button onclick="toggleHighlightHeadings()">הדגשת כותרות</button>
+    <button onclick="toggleHighlightLinks()">הדגשת קישורים</button>
+    <button onclick="toggleNoAnimations()">ביטול אנימציות</button>
 
-    <!-- כפתור לפתיחת תפריט הנגישות -->
-    <div class="accessibility-widget" onclick="toggleAccessibilityMenu()">🔍 אפשרויות נגישות</div>
+    <!-- מדריך קריאה (הקראת טקסט) -->
+    <button onclick="speakText()">🔊 הקראת טקסט</button>
+    <button onclick="speakTextHebrew()">🔊 הקראת בעברית</button>
 
-    <!-- תפריט הנגישות -->
-    <div id="accessibilityMenu" class="accessibility-menu">
-        <h2>כלי נגישות</h2>
-        <!-- עיצוב צבעים וניגודיות -->
-        <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
-        <button onclick="toggleInverse()">ניגודיות הפוכה</button>
-        <button onclick="toggleGrayScale()">גווני אפור</button>
-        <button onclick="toggleBlackWhite()">שחור לבן</button>
-        
-        <!-- שינוי גודל גופן / ריווח -->
-        <div class="row">
-            <button onclick="adjustFontSize(-10)">- גודל גופן</button>
-            <button onclick="adjustFontSize(10)">+ גודל גופן</button>
-        </div>
-        <div class="row">
-            <button onclick="adjustWordSpacing(-1)">- רווח מילים</button>
-            <button onclick="adjustWordSpacing(1)">+ רווח מילים</button>
-        </div>
-        <div class="row">
-            <button onclick="adjustLetterSpacing(-1)">- רווח אותיות</button>
-            <button onclick="adjustLetterSpacing(1)">+ רווח אותיות</button>
-        </div>
+    <!-- סמנים גדולים -->
+    <button onclick="toggleBigCursorDark()">סמן גדול כהה</button>
+    <button onclick="toggleBigCursorLight()">סמן גדול בהיר</button>
 
-        <!-- פונקציות מתקדמות -->
-        <button onclick="toggleReadableFont()">גופן קריא</button>
-        <button onclick="toggleHighlightHeadings()">הדגשת כותרות</button>
-        <button onclick="toggleHighlightLinks()">הדגשת קישורים</button>
-        <button onclick="toggleNoAnimations()">ביטול אנימציות</button>
+    <!-- איפוס -->
+    <button onclick="resetAccessibility()">♻️ איפוס הגדרות</button>
 
-        <!-- מדריך קריאה (הקראת טקסט) -->
-        <button onclick="speakText()">🔊 הקראת טקסט</button>
-
-        <!-- סמנים גדולים -->
-        <button onclick="toggleBigCursorDark()">סמן גדול כהה</button>
-        <button onclick="toggleBigCursorLight()">סמן גדול בהיר</button>
-
-        <!-- איפוס -->
-        <button onclick="resetAccessibility()">♻️ איפוס הגדרות</button>
-
-        <!-- סגירה -->
-        <button onclick="toggleAccessibilityMenu()">❌ סגור</button>
-    </div>
+    <!-- סגירה -->
+    <button onclick="toggleAccessibilityMenu()">❌ סגור</button>
+  </div>
 </body>
 </html>
