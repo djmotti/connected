@@ -12,10 +12,9 @@
       font-family: Arial, sans-serif;
       text-align: center;
       direction: rtl;
-      background: var(--main-bg) no-repeat center center fixed;
-      background-size: cover;
       color: white;
       transition: background 0.3s, color 0.3s;
+      margin: 0; /* אפס מרווח דפדפן */
     }
 
     /* דלג לתוכן */
@@ -33,37 +32,21 @@
       top: 0;
     }
 
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-    }
-    .btn {
+    header {
+      position: relative;
       display: block;
-      margin: 10px auto;
-      padding: 12px;
-      background: #ffcc00;
-      color: #333;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 18px;
-      font-weight: bold;
-      transition: background 0.3s;
+      width: 100%;
     }
-    .btn:hover {
-      background: #ffaa00;
-    }
-    .btn:focus {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
+    /* תמונה למטרת רקע - אם היא רק דקורטיבית, alt ריק "" */
+    .hero-img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      display: block;
     }
 
-    /* כפתורי שפה */
     .language-switcher {
-      position: fixed;
+      position: absolute;
       top: 10px;
       right: 10px;
       z-index: 9999;
@@ -83,6 +66,37 @@
     .language-switcher button:focus {
       background: #ffaa00;
       outline: none;
+    }
+
+    main {
+      display: block;
+      margin: 0 auto;
+      max-width: 600px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      margin-top: -50px; /* מושך את הקופסה כלפי מעלה קצת אם רוצים */
+    }
+
+    .btn {
+      display: block;
+      margin: 10px auto;
+      padding: 12px;
+      background: #ffcc00;
+      color: #333;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #ffaa00;
+    }
+    .btn:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
     }
 
     /* כפתור הנגישות */
@@ -141,8 +155,12 @@
       background: #ccc;
       outline: none;
     }
+    .accessibility-menu .row {
+      display: flex;
+      gap: 5px;
+    }
 
-    /* מצבי נגישות שונים... (כבר היו בקוד) */
+    /* מצבי נגישות */
     .high-contrast {
       background-color: black !important;
       color: yellow !important;
@@ -183,6 +201,13 @@
     .big-cursor-light {
       cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
     }
+
+    footer {
+      text-align: center;
+      color: #ccc;
+      margin-top: 20px;
+      padding: 10px 0;
+    }
   </style>
   <script>
     let currentFontSize = 100; 
@@ -200,9 +225,6 @@
       menu.style.display = (menu.style.display === "block") ? "none" : "block";
     }
 
-    // הוספנו "דלג לתוכן" בתחילת ה־body
-    // כשלוחצים על skip-link, מגיעים לאלמנט #main-content
-    
     /* בורר שפה */
     function switchLanguage(lang) {
       currentLanguage = lang;
@@ -222,7 +244,7 @@
       window.speechSynthesis.speak(msg);
     }
 
-    // פונקציה להכרחה להקריא בעברית
+    // פונקציה להכריח הקראה בעברית
     function speakTextHebrew() {
       let msg = new SpeechSynthesisUtterance(document.body.innerText);
       msg.lang = "he-IL";
@@ -326,28 +348,41 @@
   </script>
 </head>
 <body>
-  <!-- דלג לתוכן -->
+  <!-- קישור דלג לתוכן -->
   <a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
 
-  <!-- בורר שפה -->
-  <div class="language-switcher">
-    <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
-    <button onclick="switchLanguage('en')">🇬🇧 English</button>
-    <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
-  </div>
+  <!-- אזור כותרת / באנר -->
+  <header role="banner">
+    <!-- בורר שפה -->
+    <div class="language-switcher">
+      <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
+      <button onclick="switchLanguage('en')">🇬🇧 English</button>
+      <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
+    </div>
+    
+    <!-- תמונה ראשית דקורטיבית (אם אינה חיונית, alt ריק) -->
+    <img src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg" 
+         alt="" 
+         class="hero-img" 
+         aria-hidden="true">
+  </header>
 
-  <div class="container" id="main-content">
+  <!-- תוכן עיקרי -->
+  <main role="main" id="main-content">
     <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
+
     <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ">📲 צור קשר מיידי בוואטסאפ</a>
     <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית">📞 התקשר עכשיו</a>
     <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני">📧 שלח הודעה במייל</a>
-  </div>
+  </main>
 
   <!-- כפתור לפתיחת תפריט הנגישות -->
-  <div class="accessibility-widget" onclick="toggleAccessibilityMenu()" aria-label="פתח תפריט נגישות">🔍 אפשרויות נגישות</div>
+  <div class="accessibility-widget" onclick="toggleAccessibilityMenu()" aria-label="פתח תפריט נגישות">
+    🔍 אפשרויות נגישות
+  </div>
 
   <!-- תפריט הנגישות -->
-  <div id="accessibilityMenu" class="accessibility-menu">
+  <div id="accessibilityMenu" class="accessibility-menu" aria-label="תפריט נגישות">
     <h2>כלי נגישות</h2>
     <!-- עיצוב צבעים וניגודיות -->
     <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
@@ -389,5 +424,9 @@
     <!-- סגירה -->
     <button onclick="toggleAccessibilityMenu()">❌ סגור</button>
   </div>
+
+  <footer role="contentinfo">
+    <p>&copy; 2025 שירותי התקנת רשת. כל הזכויות שמורות.</p>
+  </footer>
 </body>
 </html>
