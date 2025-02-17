@@ -35,52 +35,6 @@
         .btn:hover {
             background: #ffaa00;
         }
-        .form-group {
-            margin: 10px 0;
-            text-align: right;
-        }
-        label {
-            font-weight: bold;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #218838;
-        }
-        .language-switcher {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-        }
-        .language-switcher button {
-            padding: 8px 12px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            background: white;
-            color: black;
-        }
-        .language-switcher button:hover {
-            background: #ddd;
-        }
         .accessibility-widget {
             position: fixed;
             bottom: 20px;
@@ -105,60 +59,58 @@
         }
     </style>
     <script>
-        function switchLanguage(lang) {
-            document.documentElement.lang = lang;
-            document.getElementById('main-content').style.direction = (lang === 'he') ? 'rtl' : 'ltr';
-        }
         function toggleAccessibilityMenu() {
             var menu = document.getElementById("accessibilityMenu");
-            if (menu.style.display === "block") {
-                menu.style.display = "none";
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+        function changeContrast(mode) {
+            if (mode === 'high') {
+                document.body.style.backgroundColor = 'black';
+                document.body.style.color = 'yellow';
+            } else if (mode === 'inverse') {
+                document.body.style.filter = 'invert(100%)';
+            } else if (mode === 'grayscale') {
+                document.body.style.filter = 'grayscale(100%)';
+            } else if (mode === 'blackwhite') {
+                document.body.style.backgroundColor = 'white';
+                document.body.style.color = 'black';
             } else {
-                menu.style.display = "block";
+                document.body.style = '';
+            }
+        }
+        function adjustFontSize(size) {
+            document.body.style.fontSize = size;
+        }
+        function adjustSpacing(spacing) {
+            document.body.style.letterSpacing = spacing;
+        }
+        function highlightLinks() {
+            let links = document.getElementsByTagName('a');
+            for (let i = 0; i < links.length; i++) {
+                links[i].style.textDecoration = 'underline';
+                links[i].style.color = 'blue';
             }
         }
     </script>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
-    
-    <div class="language-switcher">
-        <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
-        <button onclick="switchLanguage('en')">🇬🇧 English</button>
-        <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
-    </div>
-    
-    <div class="container" id="main-content">
+    <div class="container">
         <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
-        <p>✔️ חיבור מהיר, יציב ואמין<br>✔️ פתרונות רשת מתקדמים בהתאמה אישית<br>✔️ שירות איכותי ומקצועי</p>
-        
-        <a href="https://wa.me/0525304298" class="btn" aria-label="שלח הודעה בוואטסאפ">📲 צור קשר מיידי בוואטסאפ</a>
-        
-        <h2>📩 השאירו פרטים ונחזור אליכם</h2>
-        <form action="mailto:voltech.mk@gmail.com" method="post">
-            <div class="form-group">
-                <label for="name">שם מלא</label>
-                <input type="text" id="name" name="name" required aria-required="true">
-            </div>
-            <div class="form-group">
-                <label for="phone">טלפון</label>
-                <input type="tel" id="phone" name="phone" required aria-required="true">
-            </div>
-            <div class="form-group">
-                <label for="message">הודעה</label>
-                <textarea id="message" name="message" rows="4" required aria-required="true"></textarea>
-            </div>
-            <button type="submit" aria-label="שלח הודעה">📩 שלח הודעה</button>
-        </form>
+        <a href="https://wa.me/0525304298" class="btn">📲 צור קשר מיידי בוואטסאפ</a>
     </div>
     
     <div class="accessibility-widget" onclick="toggleAccessibilityMenu()">🔍 אפשרויות נגישות</div>
     <div id="accessibilityMenu" class="accessibility-menu">
         <p>אפשרויות נגישות:</p>
-        <button onclick="document.body.style.fontSize='larger'">🔠 הגדלת טקסט</button>
-        <button onclick="document.body.style.fontSize='smaller'">🔡 הקטנת טקסט</button>
-        <button onclick="document.body.style.backgroundColor='black'; document.body.style.color='white'">⚫ מצב כהה</button>
-        <button onclick="document.body.style.backgroundColor='white'; document.body.style.color='black'">⚪ מצב בהיר</button>
+        <button onclick="changeContrast('high')">ניגודיות גבוהה</button>
+        <button onclick="changeContrast('inverse')">ניגודיות הפוכה</button>
+        <button onclick="changeContrast('grayscale')">גווני אפור</button>
+        <button onclick="changeContrast('blackwhite')">שחור לבן</button>
+        <button onclick="adjustFontSize('larger')">🔠 הגדלת גופן</button>
+        <button onclick="adjustFontSize('smaller')">🔡 הקטנת גופן</button>
+        <button onclick="adjustSpacing('2px')">התאמת ריווח אותיות</button>
+        <button onclick="highlightLinks()">הדגשת קישורים</button>
+        <button onclick="toggleAccessibilityMenu()">❌ סגור</button>
     </div>
 </body>
 </html>
