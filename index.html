@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>שירותי התקנת רשת - חיבור יציב ואמין</title>
   <style>
-    :root {
-      --main-bg: url('https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg');
+    /* הגדרות בסיס */
+    * {
+      box-sizing: border-box;
     }
     body {
+      margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
       text-align: center;
       direction: rtl;
-      color: white;
+      color: #fff;
       transition: background 0.3s, color 0.3s;
-      margin: 0; /* אפס מרווח דפדפן */
+      background-color: #242424; /* לגיבוי כאשר תמונת הרקע לא נטענת */
     }
 
     /* דלג לתוכן */
@@ -32,19 +35,20 @@
       top: 0;
     }
 
+    /* אזור כותרת (header) */
     header {
       position: relative;
       display: block;
       width: 100%;
     }
-    /* תמונה למטרת רקע - אם היא רק דקורטיבית, alt ריק "" */
     .hero-img {
       width: 100%;
-      max-height: 350px;
+      max-height: 400px;
       object-fit: cover;
       display: block;
     }
 
+    /* בורר שפה */
     .language-switcher {
       position: absolute;
       top: 10px;
@@ -68,28 +72,35 @@
       outline: none;
     }
 
+    /* אזור תוכן עיקרי (main) */
     main {
-      display: block;
-      margin: 0 auto;
-      max-width: 600px;
+      max-width: 700px;
+      margin: -80px auto 0 auto; /* מעלה את הקופסה טיפה מעל התמונה */
       padding: 20px;
       background: rgba(0, 0, 0, 0.7);
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px); /* אפקט טשטוש מאחורי הקופסה */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
       border-radius: 10px;
-      margin-top: -50px; /* מושך את הקופסה כלפי מעלה קצת אם רוצים */
+      position: relative;
+    }
+
+    main h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
 
     .btn {
       display: block;
       margin: 10px auto;
-      padding: 12px;
+      padding: 12px 18px;
       background: #ffcc00;
       color: #333;
       text-decoration: none;
       border-radius: 5px;
-      font-size: 18px;
+      font-size: 1.1rem;
       font-weight: bold;
       transition: background 0.3s;
+      width: fit-content;
     }
     .btn:hover {
       background: #ffaa00;
@@ -99,20 +110,20 @@
       outline-offset: 2px;
     }
 
-    /* כפתור הנגישות - מעכשיו button במקום div */
+    /* כפתור הנגישות */
     .accessibility-button {
       position: fixed;
       bottom: 20px;
       left: 20px;
       background: #ffcc00;
       color: black;
-      padding: 10px;
+      padding: 10px 12px;
       border-radius: 5px;
       font-weight: bold;
       cursor: pointer;
       transition: transform 0.3s;
       z-index: 9999;
-      border: none; /* הסרה של סטייל ברירת מחדל של button */
+      border: none;
     }
     .accessibility-button:hover,
     .accessibility-button:focus {
@@ -125,25 +136,26 @@
     .accessibility-menu {
       display: none;
       position: fixed;
-      bottom: 60px;
+      bottom: 70px;
       left: 20px;
-      background: white;
-      color: black;
+      background: #f9f9f9;
+      color: #333;
       padding: 15px;
       border-radius: 5px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       width: 280px;
       text-align: right;
       z-index: 9999;
     }
     .accessibility-menu h2 {
       margin: 0 0 10px;
-      font-size: 18px;
+      font-size: 1.1rem;
       text-align: center;
+      color: #333;
     }
     .accessibility-menu button {
       width: 100%;
-      margin: 5px 0;
+      margin: 6px 0;
       padding: 8px;
       border: none;
       border-radius: 5px;
@@ -160,12 +172,13 @@
     .accessibility-menu .row {
       display: flex;
       gap: 5px;
+      margin-top: 5px;
     }
 
-    /* מצבי נגישות */
+    /* מצבי נגישות שונים (נשארים כפי שהיו, רק שינויים קלים של מראה) */
     .high-contrast {
-      background-color: black !important;
-      color: yellow !important;
+      background-color: #000 !important;
+      color: #ff0 !important;
     }
     .inverted {
       filter: invert(1) hue-rotate(180deg);
@@ -174,8 +187,8 @@
       filter: grayscale(1);
     }
     .blackwhite {
-      background-color: white !important;
-      color: black !important;
+      background-color: #fff !important;
+      color: #000 !important;
     }
     .readable-font {
       font-family: sans-serif !important;
@@ -204,19 +217,19 @@
       cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
     }
 
-    /* Footer עם ניגודיות גבוהה יותר */
     footer {
       text-align: center;
-      background: #333;    /* רקע כהה */
-      color: #eee;        /* כיתוב בהיר כדי להשיג ניגודיות טובה */
+      background: #333;
+      color: #eee;
       font-size: 14px;
       padding: 10px 0;
+      margin-top: 30px;
     }
   </style>
   <script>
-    let currentFontSize = 100; 
-    let currentWordSpacing = 0; 
-    let currentLetterSpacing = 0; 
+    let currentFontSize = 100;
+    let currentWordSpacing = 0;
+    let currentLetterSpacing = 0;
     let isReadableFont = false;
     let headingsHighlighted = false;
     let linksHighlighted = false;
@@ -225,8 +238,8 @@
     let currentLanguage = 'he'; // ברירת מחדל עברית
 
     function toggleAccessibilityMenu() {
-      const menu = document.getElementById("accessibilityMenu");
-      menu.style.display = (menu.style.display === "block") ? "none" : "block";
+      const menu = document.getElementById('accessibilityMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     }
 
     /* בורר שפה */
@@ -244,38 +257,38 @@
     // הקראת טקסט לפי השפה שנבחרה
     function speakText() {
       let msg = new SpeechSynthesisUtterance(document.body.innerText);
-      msg.lang = currentLanguage; 
+      msg.lang = currentLanguage;
       window.speechSynthesis.speak(msg);
     }
 
     // פונקציה להכריח הקראה בעברית
     function speakTextHebrew() {
       let msg = new SpeechSynthesisUtterance(document.body.innerText);
-      msg.lang = "he-IL";
+      msg.lang = 'he-IL';
       window.speechSynthesis.speak(msg);
     }
 
     function toggleHighContrast() {
-      document.body.classList.remove('inverted','grayscale','blackwhite');
+      document.body.classList.remove('inverted', 'grayscale', 'blackwhite');
       document.body.classList.toggle('high-contrast');
     }
     function toggleInverse() {
-      document.body.classList.remove('high-contrast','grayscale','blackwhite');
+      document.body.classList.remove('high-contrast', 'grayscale', 'blackwhite');
       document.body.classList.toggle('inverted');
     }
     function toggleGrayScale() {
-      document.body.classList.remove('high-contrast','inverted','blackwhite');
+      document.body.classList.remove('high-contrast', 'inverted', 'blackwhite');
       document.body.classList.toggle('grayscale');
     }
     function toggleBlackWhite() {
-      document.body.classList.remove('high-contrast','inverted','grayscale');
+      document.body.classList.remove('high-contrast', 'inverted', 'grayscale');
       document.body.classList.toggle('blackwhite');
     }
 
     function adjustFontSize(value) {
       currentFontSize += value;
-      if(currentFontSize < 50) currentFontSize = 50;
-      if(currentFontSize > 200) currentFontSize = 200;
+      if (currentFontSize < 50) currentFontSize = 50;
+      if (currentFontSize > 200) currentFontSize = 200;
       document.body.style.fontSize = currentFontSize + '%';
     }
     function adjustWordSpacing(value) {
@@ -288,7 +301,7 @@
     }
     function toggleReadableFont() {
       isReadableFont = !isReadableFont;
-      if(isReadableFont) {
+      if (isReadableFont) {
         document.body.classList.add('readable-font');
       } else {
         document.body.classList.remove('readable-font');
@@ -296,7 +309,7 @@
     }
     function toggleHighlightHeadings() {
       headingsHighlighted = !headingsHighlighted;
-      if(headingsHighlighted) {
+      if (headingsHighlighted) {
         document.body.classList.add('highlight-headings');
       } else {
         document.body.classList.remove('highlight-headings');
@@ -304,7 +317,7 @@
     }
     function toggleHighlightLinks() {
       linksHighlighted = !linksHighlighted;
-      if(linksHighlighted) {
+      if (linksHighlighted) {
         document.body.classList.add('highlight-links');
       } else {
         document.body.classList.remove('highlight-links');
@@ -312,7 +325,7 @@
     }
     function toggleNoAnimations() {
       noAnimations = !noAnimations;
-      if(noAnimations) {
+      if (noAnimations) {
         document.body.classList.add('no-animations');
       } else {
         document.body.classList.remove('no-animations');
@@ -321,7 +334,7 @@
 
     function toggleBigCursorDark() {
       document.body.classList.remove('big-cursor-light');
-      if(document.body.classList.contains('big-cursor-dark')) {
+      if (document.body.classList.contains('big-cursor-dark')) {
         document.body.classList.remove('big-cursor-dark');
       } else {
         document.body.classList.add('big-cursor-dark');
@@ -329,7 +342,7 @@
     }
     function toggleBigCursorLight() {
       document.body.classList.remove('big-cursor-dark');
-      if(document.body.classList.contains('big-cursor-light')) {
+      if (document.body.classList.contains('big-cursor-light')) {
         document.body.classList.remove('big-cursor-light');
       } else {
         document.body.classList.add('big-cursor-light');
@@ -338,9 +351,16 @@
 
     function resetAccessibility() {
       document.body.classList.remove(
-        'high-contrast','inverted','grayscale','blackwhite',
-        'readable-font','highlight-headings','highlight-links',
-        'no-animations','big-cursor-dark','big-cursor-light'
+        'high-contrast',
+        'inverted',
+        'grayscale',
+        'blackwhite',
+        'readable-font',
+        'highlight-headings',
+        'highlight-links',
+        'no-animations',
+        'big-cursor-dark',
+        'big-cursor-light'
       );
       document.body.style.fontSize = '';
       document.body.style.wordSpacing = '';
@@ -352,38 +372,32 @@
   </script>
 </head>
 <body>
-  <!-- קישור דלג לתוכן -->
+  <!-- דלג לתוכן -->
   <a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
 
-  <!-- אזור כותרת / באנר -->
   <header role="banner">
-    <!-- בורר שפה -->
     <div class="language-switcher">
       <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
       <button onclick="switchLanguage('en')">🇬🇧 English</button>
       <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
     </div>
-    
-    <!-- תמונה ראשית דקורטיבית (alt ריק אם היא רק לקישוט) -->
-    <img 
+    <img
       src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg"
       alt=""
       class="hero-img"
       aria-hidden="true"
-    >
+    />
   </header>
 
-  <!-- תוכן עיקרי -->
   <main role="main" id="main-content">
     <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
-
     <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ">📲 צור קשר מיידי בוואטסאפ</a>
     <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית">📞 התקשר עכשיו</a>
     <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני">📧 שלח הודעה במייל</a>
   </main>
 
-  <!-- כפתור לפתיחת תפריט הנגישות (עכשיו button) -->
-  <button 
+  <!-- כפתור נגישות כ-button -->
+  <button
     type="button"
     class="accessibility-button"
     aria-label="פתח תפריט נגישות"
@@ -393,18 +407,14 @@
   </button>
 
   <!-- תפריט הנגישות -->
-  <div 
-    id="accessibilityMenu"
-    class="accessibility-menu"
-    aria-label="תפריט נגישות"
-  >
+  <div id="accessibilityMenu" class="accessibility-menu" aria-label="תפריט נגישות">
     <h2>כלי נגישות</h2>
     <!-- עיצוב צבעים וניגודיות -->
     <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
     <button onclick="toggleInverse()">ניגודיות הפוכה</button>
     <button onclick="toggleGrayScale()">גווני אפור</button>
     <button onclick="toggleBlackWhite()">שחור לבן</button>
-    
+
     <!-- שינוי גודל גופן / ריווח -->
     <div class="row">
       <button onclick="adjustFontSize(-10)">- גודל גופן</button>
@@ -425,7 +435,7 @@
     <button onclick="toggleHighlightLinks()">הדגשת קישורים</button>
     <button onclick="toggleNoAnimations()">ביטול אנימציות</button>
 
-    <!-- מדריך קריאה (הקראת טקסט) -->
+    <!-- הקראת טקסט -->
     <button onclick="speakText()">🔊 הקראת טקסט</button>
     <button onclick="speakTextHebrew()">🔊 הקראת בעברית</button>
 
