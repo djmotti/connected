@@ -212,12 +212,31 @@
       text-align: center;
     }
     
-    /* סגנון תצוגה אחיד לכפתורים בכל הפלטפורמות */
+    /* סגנון תצוגה אחיד לכפתורי הקשר */
+    .contact-buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+    
+    .contact-btn {
+      flex: 1;
+      margin: 0 5px;
+      text-align: center;
+      white-space: nowrap;
+      padding: 12px 5px;
+      font-size: 0.9rem;
+    }
+    
     @media (max-width: 768px) {
-      .btn {
-        display: block;
-        width: 100%;
-        margin: 10px 0;
+      .contact-btn {
+        flex-basis: 100%;
+        margin: 5px 0;
+        font-size: 1rem;
+      }
+      .contact-buttons-container {
+        flex-direction: column;
       }
     }
     .btn:hover {
@@ -685,9 +704,11 @@
       שדרוג ותחזוקה של תשתיות תקשורת, ועוד. המטרה שלנו היא לספק חיבור יציב,
       מהיר ואמין לכל לקוח.
     </p>
-    <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');" style="display: inline-block; width: calc(33.33% - 20px); margin: 10px;">📲 צור קשר מיידי בוואטסאפ</a>
-    <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');" style="display: inline-block; width: calc(33.33% - 20px); margin: 10px;">📞 התקשר עכשיו</a>
-    <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');" style="display: inline-block; width: calc(33.33% - 20px); margin: 10px;">📧 שלח הודעה במייל</a>
+    <div class="contact-buttons-container" style="display: flex; justify-content: space-between; margin: 15px 0;">
+      <a href="https://wa.me/0525304298" class="btn contact-btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');">📲 צור קשר בוואטסאפ</a>
+      <a href="tel:0525304298" class="btn contact-btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');">📞 התקשר עכשיו</a>
+      <a href="mailto:voltech.mk@gmail.com" class="btn contact-btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');">📧 שלח במייל</a>
+    </div>
     
     <!-- חלק חדש - טופס ליצירת קשר עם מעקב אנליטיקס -->
     <div class="contact-form" style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
@@ -720,7 +741,7 @@
           <textarea id="message" name="message" style="width: 100%; padding: 8px; border-radius: 4px; border: none; height: 80px; resize: vertical;"></textarea>
         </div>
         <div style="text-align: center;">
-          <button type="submit" style="background: #ffcc00; color: #333; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">שליחה</button>
+          <button id="submitButton" type="submit" style="background: #ffcc00; color: #333; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">שליחה</button>
         </div>
       </form>
     </div>
@@ -734,19 +755,68 @@
         const userEmail = document.getElementById('email').value;
         const service = document.getElementById('service').value;
         const message = document.getElementById('message').value;
-        const email = "voltech.mk@gmail.com"; // כתובת המייל שלך לקבלת הפניות
         
-        // שליחת אירוע לאנליטיקס
-        trackEvent('Lead', 'Form Submission', service);
+        // הצגת הודעת 'שולח...'
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('submitButton').innerText = 'שולח...';
         
-        // שליחת הפרטים למייל
-        sendEmail(name, phone, userEmail, service, message, email);
+        try {
+          // נסיון לשלוח התראה לדיסקורד
+          if (typeof sendToDiscord === 'function') {
+            const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
+            sendToDiscord(name, phone, userEmail, serviceText, message);
+          }
+          
+          // שמירת הפרטים בלוקל סטורג'
+          saveLeadToLocalStorage(name, phone, userEmail, service, message);
+          
+          // הצגת עמוד תודה
+          document.getElementById('thankYouPage').style.display = 'block';
+          
+          // איפוס הטופס
+          document.getElementById('contactForm').reset();
+          document.getElementById('submitButton').disabled = false;
+          document.getElementById('submitButton').innerText = 'שליחה';
+          
+          // שליחת המידע לשרת StaticForms ברקע (ללא ניווט)
+          sendFormDataSilently(name, phone, userEmail, service, message);
+          
+          return false;
+        } catch(e) {
+          console.error("Error submitting form:", e);
+          alert("אירעה שגיאה בשליחת הטופס. הפרטים נשמרו מקומית ואנו נקבל את פנייתך.");
+          document.getElementById('submitButton').disabled = false;
+          document.getElementById('submitButton').innerText = 'שליחה';
+        }
+      }
+      
+      // פונקציה לשליחת הנתונים ברקע
+      function sendFormDataSilently(name, phone, userEmail, service, message) {
+        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
         
-        // הודעה למשתמש
-        alert('פרטיך נשלחו בהצלחה! נחזור אליך בהקדם.');
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('email', userEmail);
+        formData.append('message', `שירות: ${serviceText}\n\n${message || ''}`);
+        formData.append('subject', `פנייה חדשה מהאתר - ${name}`);
+        formData.append('accessKey', '5a5edd75-5e74-4c76-91e5-1b28e7f0a49b');
         
-        // איפוס הטופס
-        document.getElementById('contactForm').reset();
+        fetch('https://api.staticforms.xyz/submit', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Form submitted successfully to StaticForms");
+          // שליחת נתונים לאנליטיקס
+          trackEvent('Lead', 'Form Submission', serviceText);
+        })
+        .catch(error => {
+          console.error("Error submitting to StaticForms:", error);
+          // במקרה של שגיאה, ניתן לנסות שיטה נוספת אך לא נפריע למשתמש
+          mailtoFallback(name, phone, userEmail, serviceText, message);
+        });
       }
       
       // פונקציה לשליחת הפרטים למייל
