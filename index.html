@@ -165,6 +165,17 @@
       font-size: 1.1rem;
       font-weight: bold;
       transition: background 0.3s;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    
+    /* סגנון תצוגה אחיד לכפתורים בכל הפלטפורמות */
+    @media (max-width: 768px) {
+      .btn {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+      }
     }
     .btn:hover {
       background: #ffaa00;
@@ -631,9 +642,9 @@
       שדרוג ותחזוקה של תשתיות תקשורת, ועוד. המטרה שלנו היא לספק חיבור יציב,
       מהיר ואמין לכל לקוח.
     </p>
-    <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');">📲 צור קשר מיידי בוואטסאפ</a>
-    <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');">📞 התקשר עכשיו</a>
-    <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');">📧 שלח הודעה במייל</a>
+    <a href="https://wa.me/0525304298" class="btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');" style="display: inline-block; width: calc(33.33% - 20px); margin: 10px;">📲 צור קשר מיידי בוואטסאפ</a>
+    <a href="tel:0525304298" class="btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');" style="display: inline-block; width: calc(33.33% - 20px); margin: 10px;">📞 התקשר עכשיו</a>
+    <a href="mailto:voltech.mk@gmail.com" class="btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');" style="display: inline-block; width: calc(33.33% - 20px); margin: 10px;">📧 שלח הודעה במייל</a>
     
     <!-- חלק חדש - טופס ליצירת קשר עם מעקב אנליטיקס -->
     <div class="contact-form" style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
