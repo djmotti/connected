@@ -212,31 +212,42 @@
       text-align: center;
     }
     
-    /* סגנון תצוגה אחיד לכפתורי הקשר */
+    /* סגנון כפתורי יצירת קשר */
     .contact-buttons-container {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: center;
       margin: 15px 0;
+      gap: 10px;
     }
     
     .contact-btn {
-      flex: 1;
-      margin: 0 5px;
+      flex: 1 1 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
       text-align: center;
       white-space: nowrap;
-      padding: 12px 5px;
-      font-size: 0.9rem;
+      padding: 12px 10px;
+      font-size: 1rem;
+      min-width: 0; /* חשוב למניעת גלישה */
+    }
+    
+    /* וידוא שהאמוג'י באותו גודל */
+    .contact-btn::before {
+      content: attr(data-icon);
+      display: inline-block;
+      width: 24px;
+      text-align: center;
+      margin-left: 5px;
     }
     
     @media (max-width: 768px) {
-      .contact-btn {
-        flex-basis: 100%;
-        margin: 5px 0;
-        font-size: 1rem;
-      }
       .contact-buttons-container {
         flex-direction: column;
+      }
+      .contact-btn {
+        width: 100%;
       }
     }
     .btn:hover {
@@ -704,10 +715,10 @@
       שדרוג ותחזוקה של תשתיות תקשורת, ועוד. המטרה שלנו היא לספק חיבור יציב,
       מהיר ואמין לכל לקוח.
     </p>
-    <div class="contact-buttons-container" style="display: flex; justify-content: space-between; margin: 15px 0;">
-      <a href="https://wa.me/0525304298" class="btn contact-btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');">📲 צור קשר בוואטסאפ</a>
-      <a href="tel:0525304298" class="btn contact-btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');">📞 התקשר עכשיו</a>
-      <a href="mailto:voltech.mk@gmail.com" class="btn contact-btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');">📧 שלח במייל</a>
+    <div class="contact-buttons-container">
+      <a href="https://wa.me/0525304298" class="btn contact-btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');" data-icon="📲">צור קשר בוואטסאפ</a>
+      <a href="tel:0525304298" class="btn contact-btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');" data-icon="📞">התקשר עכשיו</a>
+      <a href="mailto:voltech.mk@gmail.com" class="btn contact-btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');" data-icon="📧">שלח במייל</a>
     </div>
     
     <!-- חלק חדש - טופס ליצירת קשר עם מעקב אנליטיקס -->
@@ -723,9 +734,8 @@
           <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
-          <label for="email" style="display: block; margin-bottom: 5px;">דוא"ל:</label>
-          <input type="email" id="email" name="email" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;" placeholder="הזן כתובת אימייל תקינה">
-          <small style="color: #ffcc00;">חובה להזין כתובת אימייל תקינה לשליחת הטופס</small>
+          <label for="email" style="display: block; margin-bottom: 5px;">דוא"ל (אופציונלי):</label>
+          <input type="email" id="email" name="email" style="width: 100%; padding: 8px; border-radius: 4px; border: none;" placeholder="כתובת אימייל לחזרה (אופציונלי)">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
           <label for="service" style="display: block; margin-bottom: 5px;">השירות המבוקש:</label>
@@ -752,7 +762,7 @@
         
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
-        const userEmail = document.getElementById('email').value;
+        const userEmail = document.getElementById('email').value || 'לא צוין'; // ערך ברירת מחדל אם לא הוזן אימייל
         const service = document.getElementById('service').value;
         const message = document.getElementById('message').value;
         
@@ -762,9 +772,32 @@
         
         try {
           // נסיון לשלוח התראה לדיסקורד
-          if (typeof sendToDiscord === 'function') {
+          try {
             const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-            sendToDiscord(name, phone, userEmail, serviceText, message);
+            const discordData = {
+              content: "פנייה חדשה התקבלה!",
+              embeds: [{
+                title: `פנייה חדשה מ-${name}`,
+                color: 16763904, // צהוב
+                fields: [
+                  { name: "שם", value: name, inline: true },
+                  { name: "טלפון", value: phone, inline: true },
+                  { name: "אימייל", value: userEmail, inline: true },
+                  { name: "שירות מבוקש", value: serviceText, inline: true },
+                  { name: "הערות", value: message || "אין", inline: false }
+                ],
+                timestamp: new Date().toISOString()
+              }]
+            };
+            
+            // שליחה ישירה לדיסקורד בלי לחכות לתשובה
+            fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(discordData)
+            }).catch(e => console.log('Discord notification error (non-critical):', e));
+          } catch (discordError) {
+            console.log('Error preparing Discord notification:', discordError);
           }
           
           // שמירת הפרטים בלוקל סטורג'
@@ -780,6 +813,9 @@
           
           // שליחת המידע לשרת StaticForms ברקע (ללא ניווט)
           sendFormDataSilently(name, phone, userEmail, service, message);
+          
+          // שליחת נתוני פנייה למייל דרך משתמש מקומי
+          mailtoFallback(name, phone, userEmail, document.querySelector(`#service option[value="${service}"]`).textContent, message);
           
           return false;
         } catch(e) {
