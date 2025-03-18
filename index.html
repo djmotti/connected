@@ -1,4 +1,6 @@
-<!-- פונקציית ניהול פניות ושמירתן -->
+// פונקציה לשליחת נתונים לאחור - כדי למנוע שגיאות אם נקראת אוטומטית
+      function sendFormDataSilently() { return false; };
+      function mailtoFallback() { return false; };    <!-- פונקציית ניהול פניות ושמירתן -->
     <script>
       // פונקציה להצגת כל הפניות השמורות (לשימוש אדמין בלבד)
       function showSavedLeads() {
@@ -775,7 +777,7 @@
         
         // מניעת שליחה כפולה של אותו תוכן תוך דקה
         if (currentSubmissionData === lastSubmissionData && (currentTime - lastSubmissionTime) < 60000) {
-          showFormStatus("הטופס כבר נשלח לאחרונה, אנא המתן רגע", "warning");
+          showFormStatus("אין צורך ללחוץ פעמיים, ההודעה בדרכה לעסק, תודה על הסבלנות", "warning");
           return false;
         }
         
@@ -823,7 +825,8 @@
           fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(discordData)
+            body: JSON.stringify(discordData),
+            mode: 'no-cors' // הוספת מצב no-cors לטיפול באבטחת CORS
           })
           .then(response => {
             console.log("Discord notification sent successfully");
