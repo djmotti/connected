@@ -731,7 +731,7 @@
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
           <label for="phone" style="display: block; margin-bottom: 5px; font-weight: bold;">טלפון:</label>
-          <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
+          <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);" pattern="[0-9]*" inputmode="numeric" onkeypress="return /[0-9]/i.test(event.key)" placeholder="הזן מספר טלפון (ספרות בלבד)">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
           <label for="service" style="display: block; margin-bottom: 5px; font-weight: bold;">השירות המבוקש:</label>
@@ -826,6 +826,7 @@
             body: JSON.stringify(discordData)
           })
           .then(response => {
+            console.log("Discord notification sent successfully");
             submissionInProgress = false;
             // הצגת עמוד תודה
             document.getElementById('thankYouPage').style.display = 'block';
