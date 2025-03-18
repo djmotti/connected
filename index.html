@@ -721,7 +721,8 @@
         addField(form, '_subject', `פנייה חדשה מהאתר - ${name}`);
         addField(form, '_captcha', 'false');
         addField(form, '_template', 'box');
-        addField(form, '_next', window.location.href);
+        // הפניה לדף תודה מותאם אישית או לדף הראשי
+        addField(form, '_next', window.location.href + '?thanks=true');
         
         document.body.appendChild(form);
         
@@ -792,49 +793,26 @@
       }
     </script>
     
-    <!-- הוספת אפשרות לשימוש ב-Firebase (אופציונלי) -->
+    <!-- דף תודה מוטמע למקרה של הצלחה -->
+    <div id="thankYouPage" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; text-align: center;">
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #242424; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%;">
+        <h2 style="color: #ffcc00; margin-top: 0;">תודה על פנייתך!</h2>
+        <p>הפרטים שלך התקבלו בהצלחה. נחזור אליך בהקדם האפשרי.</p>
+        <button onclick="document.getElementById('thankYouPage').style.display = 'none';" style="background: #ffcc00; color: #333; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px;">סגור</button>
+      </div>
+    </div>
+    
     <script>
-      // פונקציה להצגת כל הפניות השמורות (לשימוש אדמין בלבד)
-      function showSavedLeads() {
-        try {
-          const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
-          if (leads.length === 0) {
-            console.log('אין פניות שמורות במכשיר זה');
-            return;
-          }
+      // בדיקה אם המשתמש הגיע מהפניה של FormSubmit
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.location.search.includes('thanks=true')) {
+          document.getElementById('thankYouPage').style.display = 'block';
           
-          console.table(leads);
-          
-          // יצירת קובץ CSV להורדה
-          let csvContent = "data:text/csv;charset=utf-8,";
-          csvContent += "שם,טלפון,אימייל,שירות,הערות,תאריך\r\n";
-          
-          leads.forEach(lead => {
-            const row = [
-              lead.name,
-              lead.phone,
-              lead.email || '',
-              lead.service,
-              (lead.message || '').replace(/,/g, ' '),
-              new Date(lead.timestamp).toLocaleString('he-IL')
-            ].join(',');
-            csvContent += row + "\r\n";
-          });
-          
-          const encodedUri = encodeURI(csvContent);
-          const link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute("download", "פניות_מהאתר.csv");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } catch (e) {
-          console.error('שגיאה בטעינת הפניות השמורות', e);
+          // הסרת הפרמטר מה-URL ללא רענון הדף
+          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.replaceState({path: newUrl}, '', newUrl);
         }
-      }
-      
-      // לצורכי ניהול - ניתן להפעיל בקונסול של הדפדפן: showSavedLeads()
-      window.showSavedLeads = showSavedLeads;
+      });
     </script>
 
     <section id="about">
