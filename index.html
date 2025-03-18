@@ -803,37 +803,8 @@
           
           // שליחה לדיסקורד
           const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-          
-          const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
           const discordData = {
             content: `פנייה חדשה התקבלה! (מזהה: ${submissionId})`,
-            embeds: [{
-              title: `פנייה חדשה מ-${name}`,
-              description: `שם: ${name}
-טלפון: ${phone}
-שירות: ${serviceText}
-הערות: ${message || 'אין'}`, // Added description
-              color: 16763904, // צהוב
-            }]
-          };
-
-          // שליחה ישירה לדיסקורד
-          fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(discordData)
-          })
-          .then(response => {
-            if (response.ok) {
-              console.log("Discord notification sent successfully");
-            } else {
-              console.error("Failed to send Discord notification", response.statusText);
-            }
-          })
-          .catch(error => {
-            console.error("Error sending to Discord:", error);
-          });
-)`,
             embeds: [{
               title: `פנייה חדשה מ-${name}`,
               color: 16763904, // צהוב
