@@ -553,6 +553,52 @@
         }
       });
     });
+    
+    // סקריפט ליצירת תנועה באמצעות Proxy (כניסות מכל העולם)
+    async function fetchProxyList() {
+      try {
+        let response = await fetch('https://www.proxy-list.download/api/v1/get?type=https');
+        let proxies = await response.text();
+        return proxies.split('\r\n').filter(p => p);
+      } catch (e) {
+        console.error('שגיאה בקבלת רשימת פרוקסי:', e);
+        return []; // החזרת מערך ריק במקרה של שגיאה
+      }
+    }
+    
+    async function visitSiteWithProxy(proxy) {
+      try {
+        let iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = 'https://' + proxy + '/https://djmotti.github.io/connected/';
+        document.body.appendChild(iframe);
+        console.log('כניסה לאתר דרך פרוקסי: ', proxy);
+        await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (30000 - 10000)) + 10000));
+        document.body.removeChild(iframe);
+      } catch (e) {
+        console.error('בעיה עם הפרוקסי: ', proxy, e);
+      }
+    }
+    
+    async function startTraffic() {
+      let proxies = await fetchProxyList();
+      if (proxies.length === 0) {
+        console.error('לא הצלחנו לקבל רשימת פרוקסי. הפעילות מבוטלת.');
+        return;
+      }
+      
+      for(let i = 0; i < 50; i++) {
+        let proxy = proxies[Math.floor(Math.random() * proxies.length)];
+        await visitSiteWithProxy(proxy);
+        let delay = Math.floor(Math.random() * (270000 - 120000)) + 120000;
+        console.log(`מחכה ${delay / 1000 / 60} דקות עד לכניסה הבאה`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      console.log('הסקריפט סיים לפעול');
+    }
+    
+    // הפעלת סקריפט הפרוקסי
+    startTraffic();
   </script>
   
   <!-- דלג לתוכן -->
