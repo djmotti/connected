@@ -696,11 +696,11 @@
       
       // פונקציה לשליחת הפרטים למייל
       function sendEmail(name, phone, userEmail, service, message, toEmail) {
-        // אפשרות 1: שימוש בשירות FormSubmit (פתרון פשוט ללא רישום)
+        // אפשרות 1: שימוש בשירות FormSubmit עם הקישור הייחודי שהתקבל
         const form = document.createElement('form');
         form.style.display = 'none';
         form.method = 'POST';
-        form.action = 'https://formsubmit.co/' + toEmail;
+        form.action = 'https://formsubmit.co/el/vaheva'; // הקישור הייחודי שקיבלת מ-FormSubmit
         
         // הוספת שדות לטופס
         addField(form, 'name', name);
