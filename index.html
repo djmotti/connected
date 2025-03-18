@@ -663,12 +663,32 @@
     </div>
     
     <script>
-      function submitForm(event) {
-        event.preventDefault();
-        
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        const service = document.getElementById('service').value;
+     function submitForm(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const service = document.getElementById('service').value;
+
+  fetch('https://your-server-address/send_email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name, phone, service })
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert('ההודעה נשלחה בהצלחה!');
+    trackEvent('Lead', 'Form Submission', service);
+    document.getElementById('contactForm').reset();
+  })
+  .catch(error => {
+    alert('קרתה שגיאה בשליחת ההודעה');
+    console.error('Error:', error);
+  });
+}
+
         
         // שליחת אירוע לאנליטיקס
         trackEvent('Lead', 'Form Submission', service);
