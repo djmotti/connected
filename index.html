@@ -726,16 +726,16 @@
       <h3 style="color: #ffcc00; margin-top: 0;">השאירו פרטים ונחזור אליכם</h3>
       <form id="contactForm" onsubmit="submitForm(event)" method="POST">
         <div style="margin-bottom: 15px; text-align: right;">
-          <label for="name" style="display: block; margin-bottom: 5px;">שם מלא:</label>
-          <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
+          <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">שם מלא:</label>
+          <input type="text" id="name" name="name" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
-          <label for="phone" style="display: block; margin-bottom: 5px;">טלפון:</label>
-          <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
+          <label for="phone" style="display: block; margin-bottom: 5px; font-weight: bold;">טלפון:</label>
+          <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
-          <label for="service" style="display: block; margin-bottom: 5px;">השירות המבוקש:</label>
-          <select id="service" name="service" style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
+          <label for="service" style="display: block; margin-bottom: 5px; font-weight: bold;">השירות המבוקש:</label>
+          <select id="service" name="service" style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
             <option value="wifi">פתרונות Wi-Fi</option>
             <option value="network">התקנת רשת</option>
             <option value="upgrade">שדרוג תשתיות</option>
@@ -743,17 +743,24 @@
           </select>
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
-          <label for="message" style="display: block; margin-bottom: 5px;">הערות נוספות:</label>
-          <textarea id="message" name="message" style="width: 100%; padding: 8px; border-radius: 4px; border: none; height: 80px; resize: vertical;"></textarea>
+          <label for="message" style="display: block; margin-bottom: 5px; font-weight: bold;">הערות נוספות:</label>
+          <textarea id="message" name="message" style="width: 100%; padding: 12px; border-radius: 4px; border: none; height: 100px; resize: vertical; font-size: 16px; background-color: rgba(255,255,255,0.9);"></textarea>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 25px;">
-          <button type="button" id="resetButton" style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">איפוס</button>
-          <button id="submitButton" type="submit" style="background: #ffcc00; color: #333; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">שליחה</button>
+          <button type="button" id="resetButton" style="background: #666; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">איפוס</button>
+          <button id="submitButton" type="submit" style="background: #ffcc00; color: #333; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">שליחה</button>
         </div>
+        <!-- מחוון שליחה -->
+        <div id="formSubmitStatus" style="display: none; margin-top: 15px; text-align: center; padding: 10px; border-radius: 5px; font-weight: bold;"></div>
       </form>
     </div>
     
     <script>
+      // משתנה גלובלי לטיפול בשליחות כפולות
+      let lastSubmissionData = '';
+      let submissionInProgress = false;
+      let lastSubmissionTime = 0;
+      
       function submitForm(event) {
         event.preventDefault();
         
@@ -762,18 +769,42 @@
         const service = document.getElementById('service').value;
         const message = document.getElementById('message').value;
         
+        // מניעת שליחה כפולה - בדיקת תוכן
+        const currentSubmissionData = `${name}-${phone}-${service}-${message}`;
+        const currentTime = new Date().getTime();
+        
+        // מניעת שליחה כפולה של אותו תוכן תוך דקה
+        if (currentSubmissionData === lastSubmissionData && (currentTime - lastSubmissionTime) < 60000) {
+          showFormStatus("הטופס כבר נשלח לאחרונה, אנא המתן רגע", "warning");
+          return false;
+        }
+        
+        // מניעת לחיצה חוזרת על כפתור השליחה בזמן שליחה קיימת
+        if (submissionInProgress) {
+          return false;
+        }
+        
+        submissionInProgress = true;
+        lastSubmissionData = currentSubmissionData;
+        lastSubmissionTime = currentTime;
+        
         // הצגת הודעת 'שולח...'
         document.getElementById('submitButton').disabled = true;
         document.getElementById('submitButton').innerText = 'שולח...';
+        showFormStatus("שולח את הפרטים...", "info");
         
         try {
+          // יצירת מזהה ייחודי לפנייה
+          const submissionId = generateSubmissionId();
+          document.getElementById('submissionId').innerText = `מזהה פנייה: ${submissionId}`;
+          
           // שמירת הפרטים בלוקל סטורג'
-          saveLeadToLocalStorage(name, phone, "", service, message);
+          saveLeadToLocalStorage(name, phone, "", service, message, submissionId);
           
           // שליחה לדיסקורד
           const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
           const discordData = {
-            content: "פנייה חדשה התקבלה!",
+            content: `פנייה חדשה התקבלה! (מזהה: ${submissionId})`,
             embeds: [{
               title: `פנייה חדשה מ-${name}`,
               color: 16763904, // צהוב
@@ -781,7 +812,8 @@
                 { name: "שם", value: name, inline: true },
                 { name: "טלפון", value: phone, inline: true },
                 { name: "שירות מבוקש", value: serviceText, inline: true },
-                { name: "הערות", value: message || "אין", inline: false }
+                { name: "הערות", value: message || "אין", inline: false },
+                { name: "מזהה פנייה", value: submissionId, inline: false }
               ],
               timestamp: new Date().toISOString()
             }]
@@ -794,6 +826,7 @@
             body: JSON.stringify(discordData)
           })
           .then(response => {
+            submissionInProgress = false;
             // הצגת עמוד תודה
             document.getElementById('thankYouPage').style.display = 'block';
             
@@ -801,6 +834,7 @@
             document.getElementById('contactForm').reset();
             document.getElementById('submitButton').disabled = false;
             document.getElementById('submitButton').innerText = 'שליחה';
+            document.getElementById('formSubmitStatus').style.display = 'none';
             
             // שליחת אירוע לאנליטיקס
             if(typeof trackEvent === 'function') {
@@ -809,18 +843,51 @@
           })
           .catch(error => {
             console.error("Error sending to Discord:", error);
+            submissionInProgress = false;
             document.getElementById('submitButton').disabled = false;
             document.getElementById('submitButton').innerText = 'שליחה';
             document.getElementById('thankYouPage').style.display = 'block';
+            document.getElementById('formSubmitStatus').style.display = 'none';
           });
         } catch(e) {
           console.error("Error in form submission:", e);
+          submissionInProgress = false;
           document.getElementById('submitButton').disabled = false;
           document.getElementById('submitButton').innerText = 'שליחה';
           document.getElementById('thankYouPage').style.display = 'block';
+          document.getElementById('formSubmitStatus').style.display = 'none';
         }
         
         return false;
+      }
+      
+      // פונקציה להצגת סטטוס שליחת הטופס
+      function showFormStatus(message, type) {
+        const statusElement = document.getElementById('formSubmitStatus');
+        statusElement.innerText = message;
+        statusElement.style.display = 'block';
+        
+        // סגנון לפי סוג ההודעה
+        if (type === 'warning') {
+          statusElement.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+          statusElement.style.color = '#ffc107';
+          statusElement.style.border = '1px solid #ffc107';
+        } else if (type === 'info') {
+          statusElement.style.backgroundColor = 'rgba(0, 123, 255, 0.2)';
+          statusElement.style.color = '#0dcaf0';
+          statusElement.style.border = '1px solid #0dcaf0';
+        } else {
+          statusElement.style.backgroundColor = 'rgba(255, 204, 0, 0.2)';
+          statusElement.style.color = '#ffcc00';
+          statusElement.style.border = '1px solid #ffcc00';
+        }
+      }
+      
+      // יצירת מזהה ייחודי לפנייה
+      function generateSubmissionId() {
+        const timestamp = new Date().getTime().toString(36);
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        return `${timestamp}-${randomStr}`;
       }
       
       // הוספת פונקציה לאיפוס הטופס
