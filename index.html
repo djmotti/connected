@@ -734,10 +734,6 @@
           <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
-          <label for="email" style="display: block; margin-bottom: 5px;">דוא"ל (אופציונלי):</label>
-          <input type="email" id="email" name="email" style="width: 100%; padding: 8px; border-radius: 4px; border: none;" placeholder="כתובת אימייל לחזרה (אופציונלי)">
-        </div>
-        <div style="margin-bottom: 15px; text-align: right;">
           <label for="service" style="display: block; margin-bottom: 5px;">השירות המבוקש:</label>
           <select id="service" name="service" style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
             <option value="wifi">פתרונות Wi-Fi</option>
@@ -750,7 +746,8 @@
           <label for="message" style="display: block; margin-bottom: 5px;">הערות נוספות:</label>
           <textarea id="message" name="message" style="width: 100%; padding: 8px; border-radius: 4px; border: none; height: 80px; resize: vertical;"></textarea>
         </div>
-        <div style="text-align: center;">
+        <div style="display: flex; justify-content: space-between; margin-top: 25px;">
+          <button type="button" id="resetButton" style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">איפוס</button>
           <button id="submitButton" type="submit" style="background: #ffcc00; color: #333; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">שליחה</button>
         </div>
       </form>
@@ -762,7 +759,6 @@
         
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
-        const userEmail = document.getElementById('email').value || 'לא צוין'; // ערך ברירת מחדל אם לא הוזן אימייל
         const service = document.getElementById('service').value;
         const message = document.getElementById('message').value;
         
@@ -770,39 +766,33 @@
         document.getElementById('submitButton').disabled = true;
         document.getElementById('submitButton').innerText = 'שולח...';
         
-        try {
-          // נסיון לשלוח התראה לדיסקורד
-          try {
-            const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-            const discordData = {
-              content: "פנייה חדשה התקבלה!",
-              embeds: [{
-                title: `פנייה חדשה מ-${name}`,
-                color: 16763904, // צהוב
-                fields: [
-                  { name: "שם", value: name, inline: true },
-                  { name: "טלפון", value: phone, inline: true },
-                  { name: "אימייל", value: userEmail, inline: true },
-                  { name: "שירות מבוקש", value: serviceText, inline: true },
-                  { name: "הערות", value: message || "אין", inline: false }
-                ],
-                timestamp: new Date().toISOString()
-              }]
-            };
-            
-            // שליחה ישירה לדיסקורד בלי לחכות לתשובה
-            fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(discordData)
-            }).catch(e => console.log('Discord notification error (non-critical):', e));
-          } catch (discordError) {
-            console.log('Error preparing Discord notification:', discordError);
-          }
-          
-          // שמירת הפרטים בלוקל סטורג'
-          saveLeadToLocalStorage(name, phone, userEmail, service, message);
-          
+        // שמירת הפרטים בלוקל סטורג'
+        saveLeadToLocalStorage(name, phone, "לא נדרש", service, message);
+        
+        // שליחה לדיסקורד
+        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
+        const discordData = {
+          content: "פנייה חדשה התקבלה!",
+          embeds: [{
+            title: `פנייה חדשה מ-${name}`,
+            color: 16763904, // צהוב
+            fields: [
+              { name: "שם", value: name, inline: true },
+              { name: "טלפון", value: phone, inline: true },
+              { name: "שירות מבוקש", value: serviceText, inline: true },
+              { name: "הערות", value: message || "אין", inline: false }
+            ],
+            timestamp: new Date().toISOString()
+          }]
+        };
+        
+        // שליחה ישירה לדיסקורד
+        fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(discordData)
+        })
+        .then(response => {
           // הצגת עמוד תודה
           document.getElementById('thankYouPage').style.display = 'block';
           
@@ -811,20 +801,30 @@
           document.getElementById('submitButton').disabled = false;
           document.getElementById('submitButton').innerText = 'שליחה';
           
-          // שליחת המידע לשרת StaticForms ברקע (ללא ניווט)
-          sendFormDataSilently(name, phone, userEmail, service, message);
-          
-          // שליחת נתוני פנייה למייל דרך משתמש מקומי
-          mailtoFallback(name, phone, userEmail, document.querySelector(`#service option[value="${service}"]`).textContent, message);
-          
-          return false;
-        } catch(e) {
-          console.error("Error submitting form:", e);
-          alert("אירעה שגיאה בשליחת הטופס. הפרטים נשמרו מקומית ואנו נקבל את פנייתך.");
+          // שליחת אירוע לאנליטיקס
+          trackEvent('Lead', 'Form Submission', serviceText);
+        })
+        .catch(error => {
+          console.error("Error sending to Discord:", error);
+          alert("אירעה שגיאה בשליחת הטופס. נא לנסות שוב מאוחר יותר או ליצור קשר ישירות בטלפון.");
           document.getElementById('submitButton').disabled = false;
           document.getElementById('submitButton').innerText = 'שליחה';
-        }
+        });
+        
+        return false;
       }
+      
+      // הוספת פונקציה לאיפוס הטופס
+      document.addEventListener('DOMContentLoaded', function() {
+        const resetButton = document.getElementById('resetButton');
+        if (resetButton) {
+          resetButton.addEventListener('click', function() {
+            if (confirm('האם אתה בטוח שברצונך לאפס את הטופס?')) {
+              document.getElementById('contactForm').reset();
+            }
+          });
+        }
+      });
       
       // פונקציה לשליחת הנתונים ברקע
       function sendFormDataSilently(name, phone, userEmail, service, message) {
