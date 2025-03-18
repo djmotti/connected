@@ -638,7 +638,7 @@
     <!-- חלק חדש - טופס ליצירת קשר עם מעקב אנליטיקס -->
     <div class="contact-form" style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
       <h3 style="color: #ffcc00; margin-top: 0;">השאירו פרטים ונחזור אליכם</h3>
-      <form id="contactForm" onsubmit="submitForm(event)">
+      <form id="contactForm" onsubmit="submitForm(event)" method="POST">
         <div style="margin-bottom: 15px; text-align: right;">
           <label for="name" style="display: block; margin-bottom: 5px;">שם מלא:</label>
           <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
@@ -646,6 +646,10 @@
         <div style="margin-bottom: 15px; text-align: right;">
           <label for="phone" style="display: block; margin-bottom: 5px;">טלפון:</label>
           <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
+        </div>
+        <div style="margin-bottom: 15px; text-align: right;">
+          <label for="email" style="display: block; margin-bottom: 5px;">דוא"ל (אופציונלי):</label>
+          <input type="email" id="email" name="email" style="width: 100%; padding: 8px; border-radius: 4px; border: none;">
         </div>
         <div style="margin-bottom: 15px; text-align: right;">
           <label for="service" style="display: block; margin-bottom: 5px;">השירות המבוקש:</label>
@@ -656,6 +660,10 @@
             <option value="consulting">ייעוץ מקצועי</option>
           </select>
         </div>
+        <div style="margin-bottom: 15px; text-align: right;">
+          <label for="message" style="display: block; margin-bottom: 5px;">הערות נוספות:</label>
+          <textarea id="message" name="message" style="width: 100%; padding: 8px; border-radius: 4px; border: none; height: 80px; resize: vertical;"></textarea>
+        </div>
         <div style="text-align: center;">
           <button type="submit" style="background: #ffcc00; color: #333; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">שליחה</button>
         </div>
@@ -663,43 +671,160 @@
     </div>
     
     <script>
-     function submitForm(event) {
-  event.preventDefault();
-
-  const name = document.getElementById('name').value;
-  const phone = document.getElementById('phone').value;
-  const service = document.getElementById('service').value;
-
-  fetch('fetch('https://6fcc0cd2-4e3a-4e8c-842a-dbd0a031b03b-00-2axxxa1ww14dc.pike.replit.dev/send_email', {
-', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ name, phone, service })
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert('ההודעה נשלחה בהצלחה!');
-    trackEvent('Lead', 'Form Submission', service);
-    document.getElementById('contactForm').reset();
-  })
-  .catch(error => {
-    alert('קרתה שגיאה בשליחת ההודעה');
-    console.error('Error:', error);
-  });
-}
-
+      function submitForm(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const userEmail = document.getElementById('email').value;
+        const service = document.getElementById('service').value;
+        const message = document.getElementById('message').value;
+        const email = "voltech.mk@gmail.com"; // כתובת המייל שלך לקבלת הפניות
         
         // שליחת אירוע לאנליטיקס
         trackEvent('Lead', 'Form Submission', service);
         
-        // כאן יש להוסיף את הקוד האמיתי לשליחת הטופס
+        // שליחת הפרטים למייל
+        sendEmail(name, phone, userEmail, service, message, email);
+        
+        // הודעה למשתמש
         alert('פרטיך נשלחו בהצלחה! נחזור אליך בהקדם.');
         
         // איפוס הטופס
         document.getElementById('contactForm').reset();
       }
+      
+      // פונקציה לשליחת הפרטים למייל
+      function sendEmail(name, phone, userEmail, service, message, toEmail) {
+        // אפשרות 1: שימוש בשירות FormSubmit (פתרון פשוט ללא רישום)
+        const form = document.createElement('form');
+        form.style.display = 'none';
+        form.method = 'POST';
+        form.action = 'https://formsubmit.co/' + toEmail;
+        
+        // הוספת שדות לטופס
+        addField(form, 'name', name);
+        addField(form, 'phone', phone);
+        addField(form, 'email', userEmail || 'אין');
+        addField(form, 'service', document.querySelector(`#service option[value="${service}"]`).textContent);
+        addField(form, 'message', message || 'אין הערות נוספות');
+        addField(form, '_subject', `פנייה חדשה מהאתר - ${name}`);
+        addField(form, '_captcha', 'false');
+        addField(form, '_template', 'box');
+        addField(form, '_next', window.location.href);
+        
+        document.body.appendChild(form);
+        
+        // שמירת הפרטים ב-localStorage לגיבוי לפני השליחה
+        saveLeadToLocalStorage(name, phone, userEmail, service, message);
+        
+        // ניסיון לשלוח את הטופס
+        try {
+          form.submit();
+        } catch (error) {
+          console.error('Failed to submit form', error);
+          sendMailtoFallback(name, phone, userEmail, service, message, toEmail);
+        }
+      }
+      
+      // פונקציה עזר להוספת שדות לטופס
+      function addField(form, name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value || '';
+        form.appendChild(input);
+      }
+      
+      // אפשרות גיבוי באמצעות mailto
+      function sendMailtoFallback(name, phone, userEmail, service, message, toEmail) {
+        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
+        const subject = `פנייה חדשה מהאתר - ${name}`;
+        const body = `שם: ${name}%0D%0A` + 
+                   `טלפון: ${phone}%0D%0A` + 
+                   (userEmail ? `אימייל: ${userEmail}%0D%0A` : '') +
+                   `שירות מבוקש: ${serviceText}%0D%0A` +
+                   (message ? `הערות: ${message}%0D%0A` : '');
+        
+        // פתיחת תוכנת המייל עם הפרטים המוכנים
+        window.open(`mailto:${toEmail}?subject=${subject}&body=${body}`);
+      }
+      
+      // שמירת הפרטים ב-localStorage למקרה של תקלה
+      function saveLeadToLocalStorage(name, phone, userEmail, service, message) {
+        try {
+          const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
+          leads.push({
+            name,
+            phone,
+            email: userEmail || '',
+            service,
+            message: message || '',
+            timestamp: new Date().toISOString()
+          });
+          localStorage.setItem('formLeads', JSON.stringify(leads));
+          
+          // גם לענן אם קיים Firebase (אופציונלי)
+          if (window.firebase && window.firebase.database) {
+            const newLeadRef = firebase.database().ref('leads').push();
+            newLeadRef.set({
+              name,
+              phone,
+              email: userEmail || '',
+              service,
+              message: message || '',
+              timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+          }
+        } catch (e) {
+          console.error('Failed to save lead to localStorage', e);
+        }
+      }
+    </script>
+    
+    <!-- הוספת אפשרות לשימוש ב-Firebase (אופציונלי) -->
+    <script>
+      // פונקציה להצגת כל הפניות השמורות (לשימוש אדמין בלבד)
+      function showSavedLeads() {
+        try {
+          const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
+          if (leads.length === 0) {
+            console.log('אין פניות שמורות במכשיר זה');
+            return;
+          }
+          
+          console.table(leads);
+          
+          // יצירת קובץ CSV להורדה
+          let csvContent = "data:text/csv;charset=utf-8,";
+          csvContent += "שם,טלפון,אימייל,שירות,הערות,תאריך\r\n";
+          
+          leads.forEach(lead => {
+            const row = [
+              lead.name,
+              lead.phone,
+              lead.email || '',
+              lead.service,
+              (lead.message || '').replace(/,/g, ' '),
+              new Date(lead.timestamp).toLocaleString('he-IL')
+            ].join(',');
+            csvContent += row + "\r\n";
+          });
+          
+          const encodedUri = encodeURI(csvContent);
+          const link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", "פניות_מהאתר.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (e) {
+          console.error('שגיאה בטעינת הפניות השמורות', e);
+        }
+      }
+      
+      // לצורכי ניהול - ניתן להפעיל בקונסול של הדפדפן: showSavedLeads()
+      window.showSavedLeads = showSavedLeads;
     </script>
 
     <section id="about">
