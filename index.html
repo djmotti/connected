@@ -1,1191 +1,1200 @@
 <!-- פונקציית ניהול פניות ושמירתן -->
-    <script>
-      // פונקציה להצגת כל הפניות השמורות (לשימוש אדמין בלבד)
-      function showSavedLeads() {
-        try {
-          const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
-          if (leads.length === 0) {
-            console.log('אין פניות שמורות במכשיר זה');
-            return;
-          }
-          
-          console.table(leads);
-          
-          // יצירת קובץ CSV להורדה
-          let csvContent = "data:text/csv;charset=utf-8,";
-          csvContent += "שם,טלפון,אימייל,שירות,הערות,תאריך\r\n";
-          
-          leads.forEach(lead => {
-            const row = [
-              lead.name,
-              lead.phone,
-              lead.email || '',
-              lead.service,
-              (lead.message || '').replace(/,/g, ' '),
-              new Date(lead.timestamp).toLocaleString('he-IL')
-            ].join(',');
-            csvContent += row + "\r\n";
-          });
-          
-          const encodedUri = encodeURI(csvContent);
-          const link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute("download", "פניות_מהאתר.csv");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } catch (e) {
-          console.error('שגיאה בטעינת הפניות השמורות', e);
+<script>
+    // פונקציה להצגת כל הפניות השמורות (לשימוש אדמין בלבד)
+    function showSavedLeads() {
+      try {
+        const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
+        if (leads.length === 0) {
+          console.log('אין פניות שמורות במכשיר זה');
+          return;
         }
+        
+        console.table(leads);
+        
+        // יצירת קובץ CSV להורדה
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "שם,טלפון,אימייל,שירות,הערות,תאריך\r\n";
+        
+        leads.forEach(lead => {
+          const row = [
+            lead.name,
+            lead.phone,
+            lead.email || '',
+            lead.service,
+            (lead.message || '').replace(/,/g, ' '),
+            new Date(lead.timestamp).toLocaleString('he-IL')
+          ].join(',');
+          csvContent += row + "\r\n";
+        });
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "פניות_מהאתר.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        console.error('שגיאה בטעינת הפניות השמורות', e);
       }
-      
-      // לצורכי ניהול - ניתן להפעיל בקונסול של הדפדפן: showSavedLeads()
-      window.showSavedLeads = showSavedLeads;
-    </script><!DOCTYPE html>
+    }
+    
+    // לצורכי ניהול - ניתן להפעיל בקונסול של הדפדפן: showSavedLeads()
+    window.showSavedLeads = showSavedLeads;
+  </script><!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>התקנת רשת מקצועית - פתרונות תקשורת לבית ולעסק</title>
-  <meta name="description" content="התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים. שירות אמין ומהיר בכל רחבי הארץ." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>התקנת רשת מקצועית - פתרונות תקשורת לבית ולעסק</title>
+<meta name="description" content="התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים. שירות אמין ומהיר בכל רחבי הארץ." />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-51VN8F8M6Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-51VN8F8M6Z');
   
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-51VN8F8M6Z"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-51VN8F8M6Z');
-    
-    // מעקב אחרי אירועים מותאמים אישית
-    function trackEvent(category, action, label) {
-      gtag('event', action, {
-        'event_category': category,
-        'event_label': label
-      });
-    }
-  </script>
+  // מעקב אחרי אירועים מותאמים אישית
+  function trackEvent(category, action, label) {
+    gtag('event', action, {
+      'event_category': category,
+      'event_label': label
+    });
+  }
+</script>
+
+<!-- Meta Tags מתקדמות לSEO -->
+<meta property="og:title" content="התקנת רשת מקצועית - פתרונות תקשורת לבית ולעסק" />
+<meta property="og:description" content="התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים. שירות אמין ומהיר בכל רחבי הארץ." />
+<meta property="og:image" content="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg" />
+<meta property="og:url" content="https://www.yourwebsite.com" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- Schema.org markup למידע מובנה -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "שירותי התקנת רשת",
+    "image": "https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg",
+    "description": "התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IL"
+    },
+    "telephone": "0525304298",
+    "email": "voltech.mk@gmail.com",
+    "priceRange": "₪₪-₪₪₪",
+    "sameAs": [
+      "https://www.facebook.com/yourcompany",
+      "https://www.instagram.com/yourcompany"
+    ]
+  }
+</script>
+
+<style>
+  :root {
+    --main-bg: url('https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg');
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    direction: rtl;
+    color: #fff;
+    transition: background 0.3s, color 0.3s;
+    background-color: #242424;
+  }
+
+  /* דלג לתוכן */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #ffcc00;
+    color: #333;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 9999;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+
+  header {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .hero-img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* בורר שפה */
+  .language-switcher {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+  }
+  .language-switcher button {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #ffcc00;
+    color: #333;
+    transition: background 0.3s;
+  }
+  .language-switcher button:hover,
+  .language-switcher button:focus {
+    background: #ffaa00;
+  }
+
+  /* תפריט ניווט עליון */
+  nav {
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  nav a {
+    color: #ffcc00;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 6px 10px;
+    transition: background 0.3s;
+  }
+  nav a:hover {
+    background: #ffcc00;
+    color: #333;
+    border-radius: 5px;
+  }
+
+  main {
+    max-width: 700px;
+    margin: -70px auto 0 auto; /* מעלה את הקופסה טיפה מעל התמונה */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    border-radius: 10px;
+    position: relative;
+  }
+  main h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .btn {
+    display: inline-block;
+    margin: 10px auto;
+    padding: 12px 18px;
+    background: #ffcc00;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background 0.3s;
+    box-sizing: border-box;
+    text-align: center;
+  }
   
-  <!-- Meta Tags מתקדמות לSEO -->
-  <meta property="og:title" content="התקנת רשת מקצועית - פתרונות תקשורת לבית ולעסק" />
-  <meta property="og:description" content="התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים. שירות אמין ומהיר בכל רחבי הארץ." />
-  <meta property="og:image" content="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg" />
-  <meta property="og:url" content="https://www.yourwebsite.com" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
+  /* סגנון כפתורי יצירת קשר */
+  .contact-buttons-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+    gap: 10px;
+  }
   
-  <!-- Schema.org markup למידע מובנה -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "שירותי התקנת רשת",
-      "image": "https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg",
-      "description": "התקנת רשת מקצועית לבית ולעסק, שדרוגי Wi-Fi, התקנות בחניונים ופתרונות תקשורת נוספים",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "IL"
-      },
-      "telephone": "0525304298",
-      "email": "voltech.mk@gmail.com",
-      "priceRange": "₪₪-₪₪₪",
-      "sameAs": [
-        "https://www.facebook.com/yourcompany",
-        "https://www.instagram.com/yourcompany"
-      ]
-    }
-  </script>
+  .contact-btn {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    padding: 12px 10px;
+    font-size: 1rem;
+    min-width: 0; /* חשוב למניעת גלישה */
+  }
   
-  <style>
-    :root {
-      --main-bg: url('https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg');
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      direction: rtl;
-      color: #fff;
-      transition: background 0.3s, color 0.3s;
-      background-color: #242424;
-    }
-
-    /* דלג לתוכן */
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: #ffcc00;
-      color: #333;
-      padding: 8px;
-      text-decoration: none;
-      z-index: 9999;
-    }
-    .skip-link:focus {
-      top: 0;
-    }
-
-    header {
-      position: relative;
-      display: block;
-      width: 100%;
-    }
-    .hero-img {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* בורר שפה */
-    .language-switcher {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 9999;
-    }
-    .language-switcher button {
-      margin: 5px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      background: #ffcc00;
-      color: #333;
-      transition: background 0.3s;
-    }
-    .language-switcher button:hover,
-    .language-switcher button:focus {
-      background: #ffaa00;
-      outline: none;
-    }
-
-    /* תפריט ניווט עליון */
-    nav {
-      background: rgba(0,0,0,0.7);
-      padding: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    nav a {
-      color: #ffcc00;
-      text-decoration: none;
-      font-weight: bold;
-      padding: 6px 10px;
-      transition: background 0.3s;
-    }
-    nav a:hover {
-      background: #ffcc00;
-      color: #333;
-      border-radius: 5px;
-    }
-
-    main {
-      max-width: 700px;
-      margin: -70px auto 0 auto; /* מעלה את הקופסה טיפה מעל התמונה */
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-      border-radius: 10px;
-      position: relative;
-    }
-    main h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    .btn {
-      display: inline-block;
-      margin: 10px auto;
-      padding: 12px 18px;
-      background: #ffcc00;
-      color: #333;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      transition: background 0.3s;
-      box-sizing: border-box;
-      text-align: center;
-    }
-    
-    /* סגנון כפתורי יצירת קשר */
+  /* וידוא שהאמוג'י באותו גודל */
+  .contact-btn::before {
+    content: attr(data-icon);
+    display: inline-block;
+    width: 24px;
+    text-align: center;
+    margin-left: 5px;
+  }
+  
+  @media (max-width: 768px) {
     .contact-buttons-container {
-      display: flex;
-      justify-content: center;
-      margin: 15px 0;
-      gap: 10px;
+      flex-direction: column;
     }
-    
     .contact-btn {
-      flex: 1 1 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-      text-align: center;
-      white-space: nowrap;
-      padding: 12px 10px;
-      font-size: 1rem;
-      min-width: 0; /* חשוב למניעת גלישה */
-    }
-    
-    /* וידוא שהאמוג'י באותו גודל */
-    .contact-btn::before {
-      content: attr(data-icon);
-      display: inline-block;
-      width: 24px;
-      text-align: center;
-      margin-left: 5px;
-    }
-    
-    @media (max-width: 768px) {
-      .contact-buttons-container {
-        flex-direction: column;
-      }
-      .contact-btn {
-        width: 100%;
-      }
-    }
-    .btn:hover {
-      background: #ffaa00;
-    }
-    .btn:focus {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
-    }
-
-    /* כפתור הנגישות */
-    .accessibility-button {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: #ffcc00;
-      color: black;
-      padding: 10px 12px;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s;
-      z-index: 9999;
-      border: none;
-    }
-    .accessibility-button:hover,
-    .accessibility-button:focus {
-      transform: scale(1.1);
-      outline: 2px solid #333;
-      outline-offset: 2px;
-    }
-
-    /* תפריט הנגישות */
-    .accessibility-menu {
-      display: none;
-      position: fixed;
-      bottom: 70px;
-      left: 20px;
-      background: #f9f9f9;
-      color: #333;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      width: 280px;
-      text-align: right;
-      z-index: 9999;
-    }
-    .accessibility-menu h2 {
-      margin: 0 0 10px;
-      font-size: 1.1rem;
-      text-align: center;
-      color: #333;
-    }
-    .accessibility-menu button {
       width: 100%;
-      margin: 6px 0;
-      padding: 8px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      background: #eee;
-      transition: background 0.3s;
     }
-    .accessibility-menu button:hover,
-    .accessibility-menu button:focus {
-      background: #ccc;
-      outline: none;
-    }
-    .accessibility-menu .row {
-      display: flex;
-      gap: 5px;
-      margin-top: 5px;
-    }
+  }
+  .btn:hover {
+    background: #ffaa00;
+  }
+  .btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
 
-    /* מצבי נגישות */
-    .high-contrast {
-      background-color: #000 !important;
-      color: #ff0 !important;
-    }
-    .inverted {
-      filter: invert(1) hue-rotate(180deg);
-    }
-    .grayscale {
-      filter: grayscale(1);
-    }
-    .blackwhite {
-      background-color: #fff !important;
-      color: #000 !important;
-    }
-    .readable-font {
-      font-family: sans-serif !important;
-    }
-    .highlight-headings h1,
-    .highlight-headings h2,
-    .highlight-headings h3,
-    .highlight-headings h4 {
-      background: #ffcc00;
-      color: #333 !important;
-      padding: 5px;
-      display: inline-block;
-    }
-    .highlight-links a {
-      color: blue !important;
-      text-decoration: underline !important;
-    }
-    .no-animations * {
-      transition: none !important;
-      animation: none !important;
-    }
-    .big-cursor-dark {
-      cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23000' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
-    }
-    .big-cursor-light {
-      cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
-    }
+  /* כפתור הנגישות */
+  .accessibility-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #ffcc00;
+    color: black;
+    padding: 10px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s;
+    z-index: 9999;
+    border: none;
+  }
+  .accessibility-button:hover,
+  .accessibility-button:focus {
+    transform: scale(1.1);
+    outline: 2px solid #333;
+    outline-offset: 2px;
+  }
 
-    footer {
-      text-align: center;
-      background: #333;
-      color: #eee;
-      font-size: 14px;
-      padding: 10px 0;
-      margin-top: 30px;
-    }
+  /* תפריט הנגישות */
+  .accessibility-menu {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    left: 20px;
+    background: #f9f9f9;
+    color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    width: 280px;
+    text-align: right;
+    z-index: 9999;
+  }
+  .accessibility-menu h2 {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: #333;
+  }
+  .accessibility-menu button {
+    width: 100%;
+    margin: 6px 0;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #eee;
+    transition: background 0.3s;
+  }
+  .accessibility-menu button:hover,
+  .accessibility-menu button:focus {
+    background: #ccc;
+    outline: none;
+  }
+  .accessibility-menu .row {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+  }
 
-    /* עיצוב לאזורי המשנה (אודות, שירותים) */
-    section {
-      text-align: right; /* כדי ליישר את הטקסט לימין */
-      margin: 20px 0;
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 5px;
-    }
-    section h2 {
-      color: #ffcc00;
-      margin-top: 0;
-      text-align: right; /* כותרת גם מימין */
-    }
-    .content {
-      line-height: 1.6;
-      text-align: right; /* הטקסט בתוך אודות ושירותים, מימין לשמאל */
-    }
+  /* מצבי נגישות */
+  .high-contrast {
+    background-color: #000 !important;
+    color: #ff0 !important;
+  }
+  .inverted {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  .grayscale {
+    filter: grayscale(1);
+  }
+  .blackwhite {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  .readable-font {
+    font-family: sans-serif !important;
+  }
+  .highlight-headings h1,
+  .highlight-headings h2,
+  .highlight-headings h3,
+  .highlight-headings h4 {
+    background: #ffcc00;
+    color: #333 !important;
+    padding: 5px;
+    display: inline-block;
+  }
+  .highlight-links a {
+    color: blue !important;
+    text-decoration: underline !important;
+  }
+  .no-animations * {
+    transition: none !important;
+    animation: none !important;
+  }
+  .big-cursor-dark {
+    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23000' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
+  }
+  .big-cursor-light {
+    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M2 2 L2 30 L10 22 L24 30 Z'/%3E%3C/svg%3E") 0 0, auto;
+  }
 
-  </style>
-  <script>
-    let currentFontSize = 100;
-    let currentWordSpacing = 0;
-    let currentLetterSpacing = 0;
-    let isReadableFont = false;
-    let headingsHighlighted = false;
-    let linksHighlighted = false;
-    let noAnimations = false;
-    let bigCursor = '';
-    let currentLanguage = 'he'; // ברירת מחדל עברית
+  footer {
+    text-align: center;
+    background: #333;
+    color: #eee;
+    font-size: 14px;
+    padding: 10px 0;
+    margin-top: 30px;
+  }
 
-    function toggleAccessibilityMenu() {
-      const menu = document.getElementById('accessibilityMenu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
+  /* עיצוב לאזורי המשנה (אודות, שירותים) */
+  section {
+    text-align: right; /* כדי ליישר את הטקסט לימין */
+    margin: 20px 0;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 5px;
+  }
+  section h2 {
+    color: #ffcc00;
+    margin-top: 0;
+    text-align: right; /* כותרת גם מימין */
+  }
+  .content {
+    line-height: 1.6;
+    text-align: right; /* הטקסט בתוך אודות ושירותים, מימין לשמאל */
+  }
 
-    /* בורר שפה */
-    function switchLanguage(lang) {
-      currentLanguage = lang;
-      document.documentElement.lang = lang;
-      // כיוון טקסט
-      if (lang === 'he') {
-        document.body.style.direction = 'rtl';
-      } else {
-        document.body.style.direction = 'ltr';
-      }
-    }
+</style>
+<script>
+  let currentFontSize = 100;
+  let currentWordSpacing = 0;
+  let currentLetterSpacing = 0;
+  let isReadableFont = false;
+  let headingsHighlighted = false;
+  let linksHighlighted = false;
+  let noAnimations = false;
+  let bigCursor = '';
+  let currentLanguage = 'he'; // ברירת מחדל עברית
 
-    // הקראת טקסט לפי השפה שנבחרה
-    function speakText() {
-      let msg = new SpeechSynthesisUtterance(document.body.innerText);
-      msg.lang = currentLanguage;
-      window.speechSynthesis.speak(msg);
-    }
+  function toggleAccessibilityMenu() {
+    const menu = document.getElementById('accessibilityMenu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
 
-    // פונקציה להכריח הקראה בעברית
-    function speakTextHebrew() {
-      let msg = new SpeechSynthesisUtterance(document.body.innerText);
-      msg.lang = 'he-IL';
-      window.speechSynthesis.speak(msg);
+  /* בורר שפה */
+  function switchLanguage(lang) {
+    currentLanguage = lang;
+    document.documentElement.lang = lang;
+    // כיוון טקסט
+    if (lang === 'he') {
+      document.body.style.direction = 'rtl';
+    } else {
+      document.body.style.direction = 'ltr';
     }
+  }
 
-    function toggleHighContrast() {
-      document.body.classList.remove('inverted','grayscale','blackwhite');
-      document.body.classList.toggle('high-contrast');
-    }
-    function toggleInverse() {
-      document.body.classList.remove('high-contrast','grayscale','blackwhite');
-      document.body.classList.toggle('inverted');
-    }
-    function toggleGrayScale() {
-      document.body.classList.remove('high-contrast','inverted','blackwhite');
-      document.body.classList.toggle('grayscale');
-    }
-    function toggleBlackWhite() {
-      document.body.classList.remove('high-contrast','inverted','grayscale');
-      document.body.classList.toggle('blackwhite');
-    }
+  // הקראת טקסט לפי השפה שנבחרה
+  function speakText() {
+    let msg = new SpeechSynthesisUtterance(document.body.innerText);
+    msg.lang = currentLanguage;
+    window.speechSynthesis.speak(msg);
+  }
 
-    function adjustFontSize(value) {
-      currentFontSize += value;
-      if (currentFontSize < 50) currentFontSize = 50;
-      if (currentFontSize > 200) currentFontSize = 200;
-      document.body.style.fontSize = currentFontSize + '%';
-    }
-    function adjustWordSpacing(value) {
-      currentWordSpacing += value;
-      document.body.style.wordSpacing = currentWordSpacing + 'px';
-    }
-    function adjustLetterSpacing(value) {
-      currentLetterSpacing += value;
-      document.body.style.letterSpacing = currentLetterSpacing + 'px';
-    }
-    function toggleReadableFont() {
-      isReadableFont = !isReadableFont;
-      if (isReadableFont) {
-        document.body.classList.add('readable-font');
-      } else {
-        document.body.classList.remove('readable-font');
-      }
-    }
-    function toggleHighlightHeadings() {
-      headingsHighlighted = !headingsHighlighted;
-      if (headingsHighlighted) {
-        document.body.classList.add('highlight-headings');
-      } else {
-        document.body.classList.remove('highlight-headings');
-      }
-    }
-    function toggleHighlightLinks() {
-      linksHighlighted = !linksHighlighted;
-      if (linksHighlighted) {
-        document.body.classList.add('highlight-links');
-      } else {
-        document.body.classList.remove('highlight-links');
-      }
-    }
-    function toggleNoAnimations() {
-      noAnimations = !noAnimations;
-      if (noAnimations) {
-        document.body.classList.add('no-animations');
-      } else {
-        document.body.classList.remove('no-animations');
-      }
-    }
+  // פונקציה להכריח הקראה בעברית
+  function speakTextHebrew() {
+    let msg = new SpeechSynthesisUtterance(document.body.innerText);
+    msg.lang = 'he-IL';
+    window.speechSynthesis.speak(msg);
+  }
 
-    function toggleBigCursorDark() {
-      document.body.classList.remove('big-cursor-light');
-      if (document.body.classList.contains('big-cursor-dark')) {
-        document.body.classList.remove('big-cursor-dark');
-      } else {
-        document.body.classList.add('big-cursor-dark');
-      }
+  function toggleHighContrast() {
+    document.body.classList.remove('inverted','grayscale','blackwhite');
+    document.body.classList.toggle('high-contrast');
+  }
+  function toggleInverse() {
+    document.body.classList.remove('high-contrast','grayscale','blackwhite');
+    document.body.classList.toggle('inverted');
+  }
+  function toggleGrayScale() {
+    document.body.classList.remove('high-contrast','inverted','blackwhite');
+    document.body.classList.toggle('grayscale');
+  }
+  function toggleBlackWhite() {
+    document.body.classList.remove('high-contrast','inverted','grayscale');
+    document.body.classList.toggle('blackwhite');
+  }
+
+  function adjustFontSize(value) {
+    currentFontSize += value;
+    if (currentFontSize < 50) currentFontSize = 50;
+    if (currentFontSize > 200) currentFontSize = 200;
+    document.body.style.fontSize = currentFontSize + '%';
+  }
+  function adjustWordSpacing(value) {
+    currentWordSpacing += value;
+    document.body.style.wordSpacing = currentWordSpacing + 'px';
+  }
+  function adjustLetterSpacing(value) {
+    currentLetterSpacing += value;
+    document.body.style.letterSpacing = currentLetterSpacing + 'px';
+  }
+  function toggleReadableFont() {
+    isReadableFont = !isReadableFont;
+    if (isReadableFont) {
+      document.body.classList.add('readable-font');
+    } else {
+      document.body.classList.remove('readable-font');
     }
-    function toggleBigCursorLight() {
+  }
+  function toggleHighlightHeadings() {
+    headingsHighlighted = !headingsHighlighted;
+    if (headingsHighlighted) {
+      document.body.classList.add('highlight-headings');
+    } else {
+      document.body.classList.remove('highlight-headings');
+    }
+  }
+  function toggleHighlightLinks() {
+    linksHighlighted = !linksHighlighted;
+    if (linksHighlighted) {
+      document.body.classList.add('highlight-links');
+    } else {
+      document.body.classList.remove('highlight-links');
+    }
+  }
+  function toggleNoAnimations() {
+    noAnimations = !noAnimations;
+    if (noAnimations) {
+      document.body.classList.add('no-animations');
+    } else {
+      document.body.classList.remove('no-animations');
+    }
+  }
+
+  function toggleBigCursorDark() {
+    document.body.classList.remove('big-cursor-light');
+    if (document.body.classList.contains('big-cursor-dark')) {
       document.body.classList.remove('big-cursor-dark');
-      if (document.body.classList.contains('big-cursor-light')) {
-        document.body.classList.remove('big-cursor-light');
-      } else {
-        document.body.classList.add('big-cursor-light');
-      }
+    } else {
+      document.body.classList.add('big-cursor-dark');
     }
+  }
+  function toggleBigCursorLight() {
+    document.body.classList.remove('big-cursor-dark');
+    if (document.body.classList.contains('big-cursor-light')) {
+      document.body.classList.remove('big-cursor-light');
+    } else {
+      document.body.classList.add('big-cursor-light');
+    }
+  }
 
-    function resetAccessibility() {
-      document.body.classList.remove(
-        'high-contrast','inverted','grayscale','blackwhite',
-        'readable-font','highlight-headings','highlight-links',
-        'no-animations','big-cursor-dark','big-cursor-light'
-      );
-      document.body.style.fontSize = '';
-      document.body.style.wordSpacing = '';
-      document.body.style.letterSpacing = '';
-      currentFontSize = 100;
-      currentWordSpacing = 0;
-      currentLetterSpacing = 0;
-    }
-  </script>
-  
-  <!-- קובץ CSS חיצוני -->
-  <link rel="stylesheet" href="styles.css">
-  
-  <!-- הוספת favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  
-  <!-- הוספת פרוטוקול preconnect לטעינה מהירה יותר -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://www.googletagmanager.com">
-  
-  <!-- מתגי קנוניקליזציה -->
-  <link rel="canonical" href="https://www.yourwebsite.com" />
-  
-  <!-- מתגי תמיכה במובייל -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  function resetAccessibility() {
+    document.body.classList.remove(
+      'high-contrast','inverted','grayscale','blackwhite',
+      'readable-font','highlight-headings','highlight-links',
+      'no-animations','big-cursor-dark','big-cursor-light'
+    );
+    document.body.style.fontSize = '';
+    document.body.style.wordSpacing = '';
+    document.body.style.letterSpacing = '';
+    currentFontSize = 100;
+    currentWordSpacing = 0;
+    currentLetterSpacing = 0;
+  }
+</script>
+
+<!-- קובץ CSS חיצוני -->
+<link rel="stylesheet" href="styles.css">
+
+<!-- הוספת favicon -->
+<link rel="icon" type="image/png" href="favicon.png">
+
+<!-- הוספת פרוטוקול preconnect לטעינה מהירה יותר -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+
+<!-- מתגי קנוניקליזציה -->
+<link rel="canonical" href="https://www.yourwebsite.com" />
+
+<!-- מתגי תמיכה במובייל -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body data-page="home">
-  <script>
-    // פונקציה לפתיחת חיפושי גוגל אקראיים
-    function visitGoogle() {
-      let links = [
-        "https://www.google.com/search?q=פתרונות+WiFi+לבית",
-        "https://www.google.com/search?q=שדרוג+רשת+ביתית",
-        "https://www.google.com/search?q=תשתיות+תקשורת+לעסק",
-        "https://www.google.com/search?q=אינטרנט+מהיר+לבתים",
-        "https://www.google.com/search?q=ראוטר+חזק+לגיימינג",
-        "https://www.google.com/search?q=התקנת+רשת+ביתית+לעסק",
-        "https://www.google.com/search?q=פתרונות+אינטרנט+לעסקים",
-        "https://www.google.com/search?q=שיפור+מהירות+האינטרנט"
-      ];
-      let randomLink = links[Math.floor(Math.random() * links.length)];
-      window.open(randomLink, '_blank');
-      
-      // שליחת אירוע לגוגל אנליטיקס
-      trackEvent('External Search', 'Auto Search', randomLink);
-    }
+<script>
+  // פונקציה לפתיחת חיפושי גוגל אקראיים
+  function visitGoogle() {
+    let links = [
+      "https://www.google.com/search?q=פתרונות+WiFi+לבית",
+      "https://www.google.com/search?q=שדרוג+רשת+ביתית",
+      "https://www.google.com/search?q=תשתיות+תקשורת+לעסק",
+      "https://www.google.com/search?q=אינטרנט+מהיר+לבתים",
+      "https://www.google.com/search?q=ראוטר+חזק+לגיימינג",
+      "https://www.google.com/search?q=התקנת+רשת+ביתית+לעסק",
+      "https://www.google.com/search?q=פתרונות+אינטרנט+לעסקים",
+      "https://www.google.com/search?q=שיפור+מהירות+האינטרנט"
+    ];
+    let randomLink = links[Math.floor(Math.random() * links.length)];
+    window.open(randomLink, '_blank');
     
-    // פונקציה לחיפוש תוכן נוסף באתר
-    function exploreMoreContent() {
-      // רשימת תכנים פנימיים באתר - יש להתאים לפי המבנה האמיתי של האתר
-      const internalContent = [
-        { id: 'about', title: 'אודות השירות' },
-        { id: 'services', title: 'שירותים מקצועיים' },
-        { id: 'wifi-solutions', title: 'פתרונות WiFi' },
-        { id: 'networking', title: 'פתרונות רשת' }
-      ];
-      
-      // בחירה אקראית של תוכן
-      const randomContent = internalContent[Math.floor(Math.random() * internalContent.length)];
-      
-      // יצירת חלונית הצעה לתוכן נוסף
-      const suggestionBox = document.createElement('div');
-      suggestionBox.style.position = 'fixed';
-      suggestionBox.style.bottom = '20px';
-      suggestionBox.style.right = '20px';
-      suggestionBox.style.backgroundColor = 'rgba(0,0,0,0.8)';
-      suggestionBox.style.color = 'white';
-      suggestionBox.style.padding = '15px';
-      suggestionBox.style.borderRadius = '5px';
-      suggestionBox.style.zIndex = '9999';
-      suggestionBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-      suggestionBox.style.direction = 'rtl';
-      
-      suggestionBox.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:10px;">מעניין אותך לקרוא עוד?</div>
-        <div style="margin-bottom:10px;">אולי יעניין אותך: ${randomContent.title}</div>
-        <div style="display:flex; justify-content:space-between;">
-          <button onclick="document.getElementById('${randomContent.id}').scrollIntoView({behavior: 'smooth'}); trackEvent('Internal Navigation', 'Content Suggestion', '${randomContent.title}'); this.parentNode.parentNode.remove();" style="background:#ffcc00; color:#333; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">כן, אני רוצה</button>
-          <button onclick="this.parentNode.parentNode.remove(); trackEvent('Internal Navigation', 'Suggestion Declined', '${randomContent.title}');" style="background:#666; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">לא תודה</button>
-        </div>
-      `;
-      
-      document.body.appendChild(suggestionBox);
-    }
-    
-    // הפעלת החיפושים האקראיים אחרי 5 שניות
-    setTimeout(visitGoogle, 5000);
-    
-    // הפעלת הצעת התוכן אחרי 15 שניות
-    setTimeout(exploreMoreContent, 15000);
-    
-    // מעקב אחרי זמן שהייה בדף
-    let timeOnPage = 0;
-    const pageViewInterval = setInterval(() => {
-      timeOnPage += 10;
-      // שליחת אירוע בכל דקה של צפייה בדף
-      if (timeOnPage % 60 === 0) {
-        trackEvent('Engagement', 'Time on Page', timeOnPage + ' seconds');
-      }
-    }, 10000);
-    
-    // מעקב אחר גלילת דף
-    let scrollDepthMarkers = [25, 50, 75, 100];
-    let markedScrollDepths = new Set();
-    
-    window.addEventListener('scroll', () => {
-      const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-      
-      scrollDepthMarkers.forEach(marker => {
-        if (scrollPercent >= marker && !markedScrollDepths.has(marker)) {
-          markedScrollDepths.add(marker);
-          trackEvent('Engagement', 'Scroll Depth', marker + '%');
-        }
-      });
-    });
-    
-    // סקריפט ליצירת תנועה באמצעות Proxy (כניסות מכל העולם)
-    async function fetchProxyList() {
-      try {
-        let response = await fetch('https://www.proxy-list.download/api/v1/get?type=https');
-        let proxies = await response.text();
-        return proxies.split('\r\n').filter(p => p);
-      } catch (e) {
-        console.error('שגיאה בקבלת רשימת פרוקסי:', e);
-        return []; // החזרת מערך ריק במקרה של שגיאה
-      }
-    }
-    
-    async function visitSiteWithProxy(proxy) {
-      try {
-        let iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = 'https://' + proxy + '/https://djmotti.github.io/connected/';
-        document.body.appendChild(iframe);
-        console.log('כניסה לאתר דרך פרוקסי: ', proxy);
-        await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (30000 - 10000)) + 10000));
-        document.body.removeChild(iframe);
-      } catch (e) {
-        console.error('בעיה עם הפרוקסי: ', proxy, e);
-      }
-    }
-    
-    async function startTraffic() {
-      let proxies = await fetchProxyList();
-      if (proxies.length === 0) {
-        console.error('לא הצלחנו לקבל רשימת פרוקסי. הפעילות מבוטלת.');
-        return;
-      }
-      
-      for(let i = 0; i < 50; i++) {
-        let proxy = proxies[Math.floor(Math.random() * proxies.length)];
-        await visitSiteWithProxy(proxy);
-        let delay = Math.floor(Math.random() * (270000 - 120000)) + 120000;
-        console.log(`מחכה ${delay / 1000 / 60} דקות עד לכניסה הבאה`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-      console.log('הסקריפט סיים לפעול');
-    }
-    
-    // הפעלת סקריפט הפרוקסי
-    startTraffic();
-  </script>
+    // שליחת אירוע לגוגל אנליטיקס
+    trackEvent('External Search', 'Auto Search', randomLink);
+  }
   
-  <!-- דלג לתוכן -->
-  <a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
-
-  <header role="banner">
-    <div class="language-switcher">
-      <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
-      <button onclick="switchLanguage('en')">🇬🇧 English</button>
-      <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
-    </div>
-    <img
-      src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg"
-      alt="התקנת רשת מקצועית בבית ובעסק"
-      class="hero-img"
-    />
-    <!-- תפריט ניווט פשוט -->
-    <nav role="navigation" aria-label="תפריט ראשי">
-      <a href="#main-content">דף הבית</a>
-      <a href="#about">אודות</a>
-      <a href="#services">שירותים</a>
-    </nav>
-  </header>
-
-  <main role="main" id="main-content">
-    <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
-    <p>
-      ברוכים הבאים לאתר שלנו! אנו מתמחים בכל פתרונות התקשורת:
-      <strong>התקנת רשת ביתית</strong>, פתרונות <strong>Wi-Fi בחניונים</strong>,
-      שדרוג ותחזוקה של תשתיות תקשורת, ועוד. המטרה שלנו היא לספק חיבור יציב,
-      מהיר ואמין לכל לקוח.
-    </p>
-    <div class="contact-buttons-container">
-      <a href="https://wa.me/0525304298" class="btn contact-btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');" data-icon="📲">צור קשר בוואטסאפ</a>
-      <a href="tel:0525304298" class="btn contact-btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');" data-icon="📞">התקשר עכשיו</a>
-      <a href="mailto:voltech.mk@gmail.com" class="btn contact-btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');" data-icon="📧">שלח במייל</a>
-    </div>
+  // פונקציה לחיפוש תוכן נוסף באתר
+  function exploreMoreContent() {
+    // רשימת תכנים פנימיים באתר - יש להתאים לפי המבנה האמיתי של האתר
+    const internalContent = [
+      { id: 'about', title: 'אודות השירות' },
+      { id: 'services', title: 'שירותים מקצועיים' },
+      { id: 'wifi-solutions', title: 'פתרונות WiFi' },
+      { id: 'networking', title: 'פתרונות רשת' }
+    ];
     
-    <!-- חלק חדש - טופס ליצירת קשר עם מעקב אנליטיקס -->
-    <div class="contact-form" style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
-      <h3 style="color: #ffcc00; margin-top: 0;">השאירו פרטים ונחזור אליכם</h3>
-      <form id="contactForm" onsubmit="submitForm(event)" method="POST">
-        <div style="margin-bottom: 15px; text-align: right;">
-          <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">שם מלא:</label>
-          <input type="text" id="name" name="name" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
-        </div>
-        <div style="margin-bottom: 15px; text-align: right;">
-          <label for="phone" style="display: block; margin-bottom: 5px; font-weight: bold;">טלפון:</label>
-          <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);" pattern="[0-9]*" inputmode="numeric" onkeypress="return /[0-9]/i.test(event.key)" placeholder="הזן מספר טלפון (ספרות בלבד)">
-        </div>
-        <div style="margin-bottom: 15px; text-align: right;">
-          <label for="service" style="display: block; margin-bottom: 5px; font-weight: bold;">השירות המבוקש:</label>
-          <select id="service" name="service" style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
-            <option value="wifi">פתרונות Wi-Fi</option>
-            <option value="network">התקנת רשת</option>
-            <option value="upgrade">שדרוג תשתיות</option>
-            <option value="consulting">ייעוץ מקצועי</option>
-          </select>
-        </div>
-        <div style="margin-bottom: 15px; text-align: right;">
-          <label for="message" style="display: block; margin-bottom: 5px; font-weight: bold;">הערות נוספות:</label>
-          <textarea id="message" name="message" style="width: 100%; padding: 12px; border-radius: 4px; border: none; height: 100px; resize: vertical; font-size: 16px; background-color: rgba(255,255,255,0.9);"></textarea>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 25px;">
-          <button type="button" id="resetButton" style="background: #666; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">איפוס</button>
-          <button id="submitButton" type="submit" style="background: #ffcc00; color: #333; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">שליחה</button>
-        </div>
-        <!-- מחוון שליחה -->
-        <div id="formSubmitStatus" style="display: none; margin-top: 15px; text-align: center; padding: 10px; border-radius: 5px; font-weight: bold;"></div>
-      </form>
-    </div>
+    // בחירה אקראית של תוכן
+    const randomContent = internalContent[Math.floor(Math.random() * internalContent.length)];
     
-    <script>
-      // משתנה גלובלי לטיפול בשליחות כפולות
-      let lastSubmissionData = '';
-      let submissionInProgress = false;
-      let lastSubmissionTime = 0;
+    // יצירת חלונית הצעה לתוכן נוסף
+    const suggestionBox = document.createElement('div');
+    suggestionBox.style.position = 'fixed';
+    suggestionBox.style.bottom = '20px';
+    suggestionBox.style.right = '20px';
+    suggestionBox.style.backgroundColor = 'rgba(0,0,0,0.8)';
+    suggestionBox.style.color = 'white';
+    suggestionBox.style.padding = '15px';
+    suggestionBox.style.borderRadius = '5px';
+    suggestionBox.style.zIndex = '9999';
+    suggestionBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+    suggestionBox.style.direction = 'rtl';
+    
+    suggestionBox.innerHTML = `
+      <div style="font-weight:bold; margin-bottom:10px;">מעניין אותך לקרוא עוד?</div>
+      <div style="margin-bottom:10px;">אולי יעניין אותך: ${randomContent.title}</div>
+      <div style="display:flex; justify-content:space-between;">
+        <button onclick="document.getElementById('${randomContent.id}').scrollIntoView({behavior: 'smooth'}); trackEvent('Internal Navigation', 'Content Suggestion', '${randomContent.title}'); this.parentNode.parentNode.remove();" style="background:#ffcc00; color:#333; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">כן, אני רוצה</button>
+        <button onclick="this.parentNode.parentNode.remove(); trackEvent('Internal Navigation', 'Suggestion Declined', '${randomContent.title}');" style="background:#666; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">לא תודה</button>
+      </div>
+    `;
+    
+    document.body.appendChild(suggestionBox);
+  }
+  
+  // הפעלת החיפושים האקראיים אחרי 5 שניות
+  setTimeout(visitGoogle, 5000);
+  
+  // הפעלת הצעת התוכן אחרי 15 שניות
+  setTimeout(exploreMoreContent, 15000);
+  
+  // מעקב אחרי זמן שהייה בדף
+  let timeOnPage = 0;
+  const pageViewInterval = setInterval(() => {
+    timeOnPage += 10;
+    // שליחת אירוע בכל דקה של צפייה בדף
+    if (timeOnPage % 60 === 0) {
+      trackEvent('Engagement', 'Time on Page', timeOnPage + ' seconds');
+    }
+  }, 10000);
+  
+  // מעקב אחר גלילת דף
+  let scrollDepthMarkers = [25, 50, 75, 100];
+  let markedScrollDepths = new Set();
+  
+  window.addEventListener('scroll', () => {
+    const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+    
+    scrollDepthMarkers.forEach(marker => {
+      if (scrollPercent >= marker && !markedScrollDepths.has(marker)) {
+        markedScrollDepths.add(marker);
+        trackEvent('Engagement', 'Scroll Depth', marker + '%');
+      }
+    });
+  });
+  
+  // סקריפט ליצירת תנועה באמצעות Proxy (כניסות מכל העולם)
+  async function fetchProxyList() {
+    try {
+      let response = await fetch('https://www.proxy-list.download/api/v1/get?type=https');
+      let proxies = await response.text();
+      return proxies.split('\r\n').filter(p => p);
+    } catch (e) {
+      console.error('שגיאה בקבלת רשימת פרוקסי:', e);
+      return []; // החזרת מערך ריק במקרה של שגיאה
+    }
+  }
+  
+  async function visitSiteWithProxy(proxy) {
+    try {
+      let iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = 'https://' + proxy + '/https://djmotti.github.io/connected/';
+      document.body.appendChild(iframe);
+      console.log('כניסה לאתר דרך פרוקסי: ', proxy);
+      await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (30000 - 10000)) + 10000));
+      document.body.removeChild(iframe);
+    } catch (e) {
+      console.error('בעיה עם הפרוקסי: ', proxy, e);
+    }
+  }
+  
+  async function startTraffic() {
+    let proxies = await fetchProxyList();
+    if (proxies.length === 0) {
+      console.error('לא הצלחנו לקבל רשימת פרוקסי. הפעילות מבוטלת.');
+      return;
+    }
+    
+    for(let i = 0; i < 50; i++) {
+      let proxy = proxies[Math.floor(Math.random() * proxies.length)];
+      await visitSiteWithProxy(proxy);
+      let delay = Math.floor(Math.random() * (270000 - 120000)) + 120000;
+      console.log(`מחכה ${delay / 1000 / 60} דקות עד לכניסה הבאה`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    console.log('הסקריפט סיים לפעול');
+  }
+  
+  // הפעלת סקריפט הפרוקסי
+  startTraffic();
+</script>
+
+<!-- דלג לתוכן -->
+<a href="#main-content" class="skip-link">דלג לתוכן העיקרי</a>
+
+<header role="banner">
+  <div class="language-switcher">
+    <button onclick="switchLanguage('he')">🇮🇱 עברית</button>
+    <button onclick="switchLanguage('en')">🇬🇧 English</button>
+    <button onclick="switchLanguage('ru')">🇷🇺 Русский</button>
+  </div>
+  <img
+    src="https://raw.githubusercontent.com/djmotti/connected/main/domenico-loia-hGV2TfOh0ns-unsplash.jpg"
+    alt="התקנת רשת מקצועית בבית ובעסק"
+    class="hero-img"
+  />
+  <!-- תפריט ניווט פשוט -->
+  <nav role="navigation" aria-label="תפריט ראשי">
+    <a href="#main-content">דף הבית</a>
+    <a href="#about">אודות</a>
+    <a href="#services">שירותים</a>
+  </nav>
+</header>
+
+<main role="main" id="main-content">
+  <h1>⚡ התקנת רשת מקצועית לבית ולעסק</h1>
+  <p>
+    ברוכים הבאים לאתר שלנו! אנו מתמחים בכל פתרונות התקשורת:
+    <strong>התקנת רשת ביתית</strong>, פתרונות <strong>Wi-Fi בחניונים</strong>,
+    שדרוג ותחזוקה של תשתיות תקשורת, ועוד. המטרה שלנו היא לספק חיבור יציב,
+    מהיר ואמין לכל לקוח.
+  </p>
+  <div class="contact-buttons-container">
+    <a href="https://wa.me/0525304298" class="btn contact-btn" aria-label="שליחת הודעת וואטסאפ" onclick="trackEvent('Contact', 'WhatsApp Click', 'Homepage');" data-icon="📲">צור קשר בוואטסאפ</a>
+    <a href="tel:0525304298" class="btn contact-btn" aria-label="התקשרות טלפונית" onclick="trackEvent('Contact', 'Phone Call', 'Homepage');" data-icon="📞">התקשר עכשיו</a>
+    <a href="mailto:voltech.mk@gmail.com" class="btn contact-btn" aria-label="שליחת דואר אלקטרוני" onclick="trackEvent('Contact', 'Email Click', 'Homepage');" data-icon="📧">שלח במייל</a>
+  </div>
+  
+  <!-- חלק חדש - טופס ליצירת קשר עם מעקב אנליטיקס -->
+  <div class="contact-form" style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 5px;">
+    <h3 style="color: #ffcc00; margin-top: 0;">השאירו פרטים ונחזור אליכם</h3>
+    <form id="contactForm" onsubmit="submitForm(event)" method="POST">
+      <div style="margin-bottom: 15px; text-align: right;">
+        <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">שם מלא:</label>
+        <input type="text" id="name" name="name" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
+      </div>
+      <div style="margin-bottom: 15px; text-align: right;">
+        <label for="phone" style="display: block; margin-bottom: 5px; font-weight: bold;">טלפון:</label>
+        <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);" pattern="[0-9]*" inputmode="numeric" onkeypress="return /[0-9]/i.test(event.key)" placeholder="הזן מספר טלפון (ספרות בלבד)">
+      </div>
+      <div style="margin-bottom: 15px; text-align: right;">
+        <label for="service" style="display: block; margin-bottom: 5px; font-weight: bold;">השירות המבוקש:</label>
+        <select id="service" name="service" style="width: 100%; padding: 12px; border-radius: 4px; border: none; font-size: 16px; background-color: rgba(255,255,255,0.9);">
+          <option value="wifi">פתרונות Wi-Fi</option>
+          <option value="network">התקנת רשת</option>
+          <option value="upgrade">שדרוג תשתיות</option>
+          <option value="consulting">ייעוץ מקצועי</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 15px; text-align: right;">
+        <label for="message" style="display: block; margin-bottom: 5px; font-weight: bold;">הערות נוספות:</label>
+        <textarea id="message" name="message" style="width: 100%; padding: 12px; border-radius: 4px; border: none; height: 100px; resize: vertical; font-size: 16px; background-color: rgba(255,255,255,0.9);"></textarea>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 25px;">
+        <button type="button" id="resetButton" style="background: #666; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">איפוס</button>
+        <button id="submitButton" type="submit" style="background: #ffcc00; color: #333; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">שליחה</button>
+      </div>
+      <!-- מחוון שליחה -->
+      <div id="formSubmitStatus" style="display: none; margin-top: 15px; text-align: center; padding: 10px; border-radius: 5px; font-weight: bold;"></div>
+    </form>
+  </div>
+  
+  <script>
+    // משתנה גלובלי לטיפול בשליחות כפולות
+    let lastSubmissionData = '';
+    let submissionInProgress = false;
+    let lastSubmissionTime = 0;
+    
+    function submitForm(event) {
+      event.preventDefault();
       
-      function submitForm(event) {
-        event.preventDefault();
-        
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        const service = document.getElementById('service').value;
-        const message = document.getElementById('message').value;
-        
-        // מניעת שליחה כפולה - בדיקת תוכן
-        const currentSubmissionData = `${name}-${phone}-${service}-${message}`;
-        const currentTime = new Date().getTime();
-        
-        // מניעת שליחה כפולה של אותו תוכן תוך דקה
-        if (currentSubmissionData === lastSubmissionData && (currentTime - lastSubmissionTime) < 60000) {
-          showFormStatus("הטופס כבר נשלח לאחרונה, אנא המתן רגע", "warning");
-          return false;
-        }
-        
-        // מניעת לחיצה חוזרת על כפתור השליחה בזמן שליחה קיימת
-        if (submissionInProgress) {
-          return false;
-        }
-        
-        submissionInProgress = true;
-        lastSubmissionData = currentSubmissionData;
-        lastSubmissionTime = currentTime;
-        
-        // הצגת הודעת 'שולח...'
-        document.getElementById('submitButton').disabled = true;
-        document.getElementById('submitButton').innerText = 'שולח...';
-        showFormStatus("שולח את הפרטים...", "info");
-        
-        try {
-          // יצירת מזהה ייחודי לפנייה
-          const submissionId = generateSubmissionId();
-          document.getElementById('submissionId').innerText = `מזהה פנייה: ${submissionId}`;
-          
-          // שמירת הפרטים בלוקל סטורג'
-          saveLeadToLocalStorage(name, phone, "", service, message, submissionId);
-          
-          // שליחה לדיסקורד
-          const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-          const discordData = {
-            content: `פנייה חדשה התקבלה! (מזהה: ${submissionId})`,
-            embeds: [{
-              title: `פנייה חדשה מ-${name}`,
-              color: 16763904, // צהוב
-              fields: [
-                { name: "שם", value: name, inline: true },
-                { name: "טלפון", value: phone, inline: true },
-                { name: "שירות מבוקש", value: serviceText, inline: true },
-                { name: "הערות", value: message || "אין", inline: false },
-                { name: "מזהה פנייה", value: submissionId, inline: false }
-              ],
-              timestamp: new Date().toISOString()
-            }]
-          };
-          
-          // שליחה ישירה לדיסקורד
-          fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(discordData)
-          })
-          .then(response => {
-            console.log("Discord notification sent successfully");
-            submissionInProgress = false;
-            // הצגת עמוד תודה
-            document.getElementById('thankYouPage').style.display = 'block';
-            
-            // איפוס הטופס
-            document.getElementById('contactForm').reset();
-            document.getElementById('submitButton').disabled = false;
-            document.getElementById('submitButton').innerText = 'שליחה';
-            document.getElementById('formSubmitStatus').style.display = 'none';
-            
-            // שליחת אירוע לאנליטיקס
-            if(typeof trackEvent === 'function') {
-              trackEvent('Lead', 'Form Submission', serviceText);
-            }
-          })
-          .catch(error => {
-            console.error("Error sending to Discord:", error);
-            submissionInProgress = false;
-            document.getElementById('submitButton').disabled = false;
-            document.getElementById('submitButton').innerText = 'שליחה';
-            document.getElementById('thankYouPage').style.display = 'block';
-            document.getElementById('formSubmitStatus').style.display = 'none';
-          });
-        } catch(e) {
-          console.error("Error in form submission:", e);
-          submissionInProgress = false;
-          document.getElementById('submitButton').disabled = false;
-          document.getElementById('submitButton').innerText = 'שליחה';
-          document.getElementById('thankYouPage').style.display = 'block';
-          document.getElementById('formSubmitStatus').style.display = 'none';
-        }
-        
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const service = document.getElementById('service').value;
+      const message = document.getElementById('message').value;
+      
+      // מניעת שליחה כפולה - בדיקת תוכן
+      const currentSubmissionData = `${name}-${phone}-${service}-${message}`;
+      const currentTime = new Date().getTime();
+      
+      // מניעת שליחה כפולה של אותו תוכן תוך דקה
+      if (currentSubmissionData === lastSubmissionData && (currentTime - lastSubmissionTime) < 60000) {
+        showFormStatus("הטופס כבר נשלח לאחרונה, אנא המתן רגע", "warning");
         return false;
       }
       
-      // פונקציה להצגת סטטוס שליחת הטופס
-      function showFormStatus(message, type) {
-        const statusElement = document.getElementById('formSubmitStatus');
-        statusElement.innerText = message;
-        statusElement.style.display = 'block';
+      // מניעת לחיצה חוזרת על כפתור השליחה בזמן שליחה קיימת
+      if (submissionInProgress) {
+        return false;
+      }
+      
+      submissionInProgress = true;
+      lastSubmissionData = currentSubmissionData;
+      lastSubmissionTime = currentTime;
+      
+      // הצגת הודעת 'שולח...'
+      document.getElementById('submitButton').disabled = true;
+      document.getElementById('submitButton').innerText = 'שולח...';
+      showFormStatus("שולח את הפרטים...", "info");
+      
+      try {
+        // יצירת מזהה ייחודי לפנייה
+        const submissionId = generateSubmissionId();
         
-        // סגנון לפי סוג ההודעה
-        if (type === 'warning') {
+        // שמירת הפרטים בלוקל סטורג'
+        saveLeadToLocalStorage(name, phone, "", service, message, submissionId);
+        
+        // הכנת הנתונים לשליחה
+        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
+        const webhookData = {
+          username: "Contact Form Bot",
+          avatar_url: "https://your-website.com/bot-avatar.png",
+          content: "",
+          embeds: [{
+            title: "📝 פנייה חדשה מהאתר",
+            color: 16763904, // צהוב
+            fields: [
+              { name: "👤 שם", value: name, inline: true },
+              { name: "📱 טלפון", value: phone, inline: true },
+              { name: "💼 שירות", value: serviceText, inline: true },
+              { name: "💬 הערות", value: message || "אין הערות", inline: false }
+            ],
+            footer: {
+              text: `מזהה פנייה: ${submissionId}`
+            },
+            timestamp: new Date().toISOString()
+          }]
+        };
+
+        // שליחה לדיסקורד דרך Cloudflare Worker או שרת מתווך אחר
+        await sendToDiscord(webhookData);
+        
+        // הצלחה - הצגת הודעת אישור
+        showFormStatus("הטופס נשלח בהצלחה!", "success");
+        document.getElementById('contactForm').reset();
+        document.getElementById('submitButton').disabled = false;
+        document.getElementById('submitButton').innerText = 'שליחה';
+        
+        // שליחת אירוע לאנליטיקס
+        trackEvent('Lead', 'Form Submission Success', serviceText);
+      } catch (error) {
+        console.error("Error sending to Discord:", error);
+        // במקרה של שגיאה, שמירה מקומית ושליחת גיבוי למייל
+        showFormStatus("הטופס נשמר, אך יש בעיה בשליחה. אנו ניצור קשר בהקדם.", "warning");
+        sendMailtoFallback(name, phone, "", serviceText, message, "your-email@domain.com");
+        
+        // שליחת אירוע שגיאה לאנליטיקס
+        trackEvent('Lead', 'Form Submission Error', error.message);
+      } finally {
+        submissionInProgress = false;
+      }
+
+    }
+    
+    // פונקציה לשליחה מאובטחת לדיסקורד
+    async function sendToDiscord(webhookData) {
+      const WEBHOOK_URL = 'https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409'; // החלף עם כתובת ה-webhook האמיתית שלך
+      
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(webhookData)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Discord API returned ${response.status}`);
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('Error sending to Discord:', error);
+        throw error;
+      }
+    }
+    
+    // יצירת מזהה ייחודי לפנייה
+    function generateSubmissionId() {
+      return `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 6)}`;
+    }
+    
+    // פונקציה להצגת סטטוס שליחת הטופס
+    function showFormStatus(message, type) {
+      const statusElement = document.getElementById('formSubmitStatus');
+      statusElement.innerText = message;
+      statusElement.style.display = 'block';
+      
+      // סגנון לפי סוג ההודעה
+      switch(type) {
+        case 'success':
+          statusElement.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
+          statusElement.style.color = '#28a745';
+          statusElement.style.border = '1px solid #28a745';
+          break;
+        case 'warning':
           statusElement.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
           statusElement.style.color = '#ffc107';
           statusElement.style.border = '1px solid #ffc107';
-        } else if (type === 'info') {
+          break;
+        case 'error':
+          statusElement.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
+          statusElement.style.color = '#dc3545';
+          statusElement.style.border = '1px solid #dc3545';
+          break;
+        default:
           statusElement.style.backgroundColor = 'rgba(0, 123, 255, 0.2)';
           statusElement.style.color = '#0dcaf0';
           statusElement.style.border = '1px solid #0dcaf0';
-        } else {
-          statusElement.style.backgroundColor = 'rgba(255, 204, 0, 0.2)';
-          statusElement.style.color = '#ffcc00';
-          statusElement.style.border = '1px solid #ffcc00';
-        }
       }
       
-      // יצירת מזהה ייחודי לפנייה
-      function generateSubmissionId() {
-        const timestamp = new Date().getTime().toString(36);
-        const randomStr = Math.random().toString(36).substring(2, 8);
-        return `${timestamp}-${randomStr}`;
+      // הסתרה אוטומטית אחרי 5 שניות במקרה של הצלחה
+      if (type === 'success') {
+        setTimeout(() => {
+          statusElement.style.display = 'none';
+        }, 5000);
       }
+    }
+
+    // פונקציה לשליחת הנתונים ברקע
+    function sendFormDataSilently(name, phone, userEmail, service, message) {
+      const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
       
-      // הוספת פונקציה לאיפוס הטופס
-      document.addEventListener('DOMContentLoaded', function() {
-        const resetButton = document.getElementById('resetButton');
-        if (resetButton) {
-          resetButton.addEventListener('click', function() {
-            if (confirm('האם אתה בטוח שברצונך לאפס את הטופס?')) {
-              document.getElementById('contactForm').reset();
-            }
-          });
-        }
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('phone', phone);
+      formData.append('email', userEmail);
+      formData.append('message', `שירות: ${serviceText}\n\n${message || ''}`);
+      formData.append('subject', `פנייה חדשה מהאתר - ${name}`);
+      formData.append('accessKey', '5a5edd75-5e74-4c76-91e5-1b28e7f0a49b');
+      
+      fetch('https://api.staticforms.xyz/submit', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Form submitted successfully to StaticForms");
+        // שליחת נתונים לאנליטיקס
+        trackEvent('Lead', 'Form Submission', serviceText);
+      })
+      .catch(error => {
+        console.error("Error submitting to StaticForms:", error);
+        // במקרה של שגיאה, ניתן לנסות שיטה נוספת אך לא נפריע למשתמש
+        mailtoFallback(name, phone, userEmail, serviceText, message);
       });
+    }
+    
+    // פונקציה לשליחת הפרטים למייל
+    function sendEmail(name, phone, userEmail, service, message, toEmail) {
+      // אפשרות 1: שימוש בשירות FormSubmit עם הקישור הייחודי שהתקבל
+      const form = document.createElement('form');
+      form.style.display = 'none';
+      form.method = 'POST';
+      form.action = 'https://formsubmit.co/el/vaheva'; // הקישור הייחודי שקיבלת מ-FormSubmit
       
-      // פונקציה לשליחת הנתונים ברקע
-      function sendFormDataSilently(name, phone, userEmail, service, message) {
-        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-        
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('phone', phone);
-        formData.append('email', userEmail);
-        formData.append('message', `שירות: ${serviceText}\n\n${message || ''}`);
-        formData.append('subject', `פנייה חדשה מהאתר - ${name}`);
-        formData.append('accessKey', '5a5edd75-5e74-4c76-91e5-1b28e7f0a49b');
-        
-        fetch('https://api.staticforms.xyz/submit', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log("Form submitted successfully to StaticForms");
-          // שליחת נתונים לאנליטיקס
-          trackEvent('Lead', 'Form Submission', serviceText);
-        })
-        .catch(error => {
-          console.error("Error submitting to StaticForms:", error);
-          // במקרה של שגיאה, ניתן לנסות שיטה נוספת אך לא נפריע למשתמש
-          mailtoFallback(name, phone, userEmail, serviceText, message);
+      // הוספת שדות לטופס
+      addField(form, 'name', name);
+      addField(form, 'phone', phone);
+      // בדיקה אם אימייל הוזן, אחרת שימוש באימייל ברירת מחדל תקין
+      if (userEmail && userEmail.includes('@')) {
+          addField(form, 'email', userEmail);
+      } else {
+          addField(form, 'email', 'no-reply@example.com');
+          // נוסיף את המידע בשדה ההערות אם אין אימייל
+          const userEmailInfo = userEmail && userEmail !== '' ? `אימייל שהוזן: ${userEmail}` : 'לא הוזן אימייל';
+          const updatedMessage = `${userEmailInfo}\n${message || 'אין הערות נוספות'}`;
+          message = updatedMessage;
+      }
+      addField(form, 'service', document.querySelector(`#service option[value="${service}"]`).textContent);
+      addField(form, 'message', message || 'אין הערות נוספות');
+      addField(form, '_subject', `פנייה חדשה מהאתר - ${name}`);
+      addField(form, '_captcha', 'false');
+      addField(form, '_template', 'box');
+      // הפניה לדף תודה מותאם אישית או לדף הראשי
+      addField(form, '_next', window.location.href + '?thanks=true');
+      
+      document.body.appendChild(form);
+      
+      // שמירת הפרטים ב-localStorage לגיבוי לפני השליחה
+      saveLeadToLocalStorage(name, phone, userEmail, service, message);
+      
+      // ניסיון לשלוח את הטופס
+      try {
+        form.submit();
+      } catch (error) {
+        console.error('Failed to submit form', error);
+        sendMailtoFallback(name, phone, userEmail, serviceText, message);
+      }
+    }
+    
+    // פונקציה עזר להוספת שדות לטופס
+    function addField(form, name, value) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value || '';
+      form.appendChild(input);
+    }
+    
+    // אפשרות גיבוי באמצעות mailto
+    function sendMailtoFallback(name, phone, userEmail, service, message, toEmail) {
+      const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
+      const subject = `פנייה חדשה מהאתר - ${name}`;
+      const body = `שם: ${name}%0D%0A` + 
+                 `טלפון: ${phone}%0D%0A` + 
+                 (userEmail ? `אימייל: ${userEmail}%0D%0A` : '') +
+                 `שירות מבוקש: ${serviceText}%0D%0A` +
+                 (message ? `הערות: ${message}%0D%0A` : '');
+      
+      // פתיחת תוכנת המייל עם הפרטים המוכנים
+      window.open(`mailto:${toEmail}?subject=${subject}&body=${body}`);
+    }
+    
+    // שמירת הפרטים ב-localStorage למקרה של תקלה
+    function saveLeadToLocalStorage(name, phone, userEmail, service, message) {
+      try {
+        const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
+        leads.push({
+          name,
+          phone,
+          email: userEmail || '',
+          service,
+          message: message || '',
+          timestamp: new Date().toISOString()
         });
-      }
-      
-      // פונקציה לשליחת הפרטים למייל
-      function sendEmail(name, phone, userEmail, service, message, toEmail) {
-        // אפשרות 1: שימוש בשירות FormSubmit עם הקישור הייחודי שהתקבל
-        const form = document.createElement('form');
-        form.style.display = 'none';
-        form.method = 'POST';
-        form.action = 'https://formsubmit.co/el/vaheva'; // הקישור הייחודי שקיבלת מ-FormSubmit
+        localStorage.setItem('formLeads', JSON.stringify(leads));
         
-        // הוספת שדות לטופס
-        addField(form, 'name', name);
-        addField(form, 'phone', phone);
-        // בדיקה אם אימייל הוזן, אחרת שימוש באימייל ברירת מחדל תקין
-        if (userEmail && userEmail.includes('@')) {
-            addField(form, 'email', userEmail);
-        } else {
-            addField(form, 'email', 'no-reply@example.com');
-            // נוסיף את המידע בשדה ההערות אם אין אימייל
-            const userEmailInfo = userEmail && userEmail !== '' ? `אימייל שהוזן: ${userEmail}` : 'לא הוזן אימייל';
-            const updatedMessage = `${userEmailInfo}\n${message || 'אין הערות נוספות'}`;
-            message = updatedMessage;
-        }
-        addField(form, 'service', document.querySelector(`#service option[value="${service}"]`).textContent);
-        addField(form, 'message', message || 'אין הערות נוספות');
-        addField(form, '_subject', `פנייה חדשה מהאתר - ${name}`);
-        addField(form, '_captcha', 'false');
-        addField(form, '_template', 'box');
-        // הפניה לדף תודה מותאם אישית או לדף הראשי
-        addField(form, '_next', window.location.href + '?thanks=true');
-        
-        document.body.appendChild(form);
-        
-        // שמירת הפרטים ב-localStorage לגיבוי לפני השליחה
-        saveLeadToLocalStorage(name, phone, userEmail, service, message);
-        
-        // ניסיון לשלוח את הטופס
-        try {
-          form.submit();
-        } catch (error) {
-          console.error('Failed to submit form', error);
-          sendMailtoFallback(name, phone, userEmail, service, message, toEmail);
-        }
-      }
-      
-      // פונקציה עזר להוספת שדות לטופס
-      function addField(form, name, value) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = name;
-        input.value = value || '';
-        form.appendChild(input);
-      }
-      
-      // אפשרות גיבוי באמצעות mailto
-      function sendMailtoFallback(name, phone, userEmail, service, message, toEmail) {
-        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-        const subject = `פנייה חדשה מהאתר - ${name}`;
-        const body = `שם: ${name}%0D%0A` + 
-                   `טלפון: ${phone}%0D%0A` + 
-                   (userEmail ? `אימייל: ${userEmail}%0D%0A` : '') +
-                   `שירות מבוקש: ${serviceText}%0D%0A` +
-                   (message ? `הערות: ${message}%0D%0A` : '');
-        
-        // פתיחת תוכנת המייל עם הפרטים המוכנים
-        window.open(`mailto:${toEmail}?subject=${subject}&body=${body}`);
-      }
-      
-      // שמירת הפרטים ב-localStorage למקרה של תקלה
-      function saveLeadToLocalStorage(name, phone, userEmail, service, message) {
-        try {
-          const leads = JSON.parse(localStorage.getItem('formLeads') || '[]');
-          leads.push({
+        // גם לענן אם קיים Firebase (אופציונלי)
+        if (window.firebase && window.firebase.database) {
+          const newLeadRef = firebase.database().ref('leads').push();
+          newLeadRef.set({
             name,
             phone,
             email: userEmail || '',
             service,
             message: message || '',
-            timestamp: new Date().toISOString()
+            timestamp: firebase.database.ServerValue.TIMESTAMP
           });
-          localStorage.setItem('formLeads', JSON.stringify(leads));
-          
-          // גם לענן אם קיים Firebase (אופציונלי)
-          if (window.firebase && window.firebase.database) {
-            const newLeadRef = firebase.database().ref('leads').push();
-            newLeadRef.set({
-              name,
-              phone,
-              email: userEmail || '',
-              service,
-              message: message || '',
-              timestamp: firebase.database.ServerValue.TIMESTAMP
-            });
-          }
-        } catch (e) {
-          console.error('Failed to save lead to localStorage', e);
         }
+      } catch (e) {
+        console.error('Failed to save lead to localStorage', e);
       }
-    </script>
-    
-    <script>
-      // מחיקת פונקציות ישנות שלא בשימוש אך עדיין נקראות
-      function sendFormDataSilently() { /* פונקציה ריקה להחלפת הישנה */ }
-      function staticFormsSubmit() { /* פונקציה ריקה להחלפת הישנה */ }
-      function formspreeSubmit() { /* פונקציה ריקה להחלפת הישנה */ }
-      function mailtoFallback() { /* פונקציה ריקה להחלפת הישנה */ }
-    </script>
+    }
+  </script>
+  
+  <script>
+    // מחיקת פונקציות ישנות שלא בשימוש אך עדיין נקראות
+    function sendFormDataSilently() { /* פונקציה ריקה להחלפת הישנה */ }
+    function staticFormsSubmit() { /* פונקציה ריקה להחלפת הישנה */ }
+    function formspreeSubmit() { /* פונקציה ריקה להחלפת הישנה */ }
+    function mailtoFallback() { /* פונקציה ריקה להחלפת הישנה */ }
+  </script>
 
-    <section id="about">
-      <h2>אודות</h2>
-      <div class="content">
-        <p>
-          אנחנו צוות מקצועי ובעל ניסיון רב בתחום <strong>התקשורת</strong>
-          והחשמל. את הפעילות שלנו התחלנו מתוך הרצון לתת מענה כולל ללקוחות,
-          החל מהתקנת קווי רשת ופתרונות Wi-Fi ועד לפרויקטים מורכבים של ניהול
-          תשתיות באתרים מסחריים וחניונים גדולים. מה שמייחד אותנו הוא השירות
-          האישי, המהיר והמקצועי לכל לקוח.
-        </p>
-      </div>
-    </section>
-
-    <section id="services">
-      <h2>שירותים</h2>
-      <div class="content">
-        <ul>
-          <li><strong>התקנת רשת ביתית</strong> - חיבור מהיר ואמין בכל חדר</li>
-          <li><strong>פתרונות Wi-Fi לחניונים</strong> - פריסה חכמה עם ניהול עומסים</li>
-          <li><strong>שדרוג תשתיות</strong> - החלפת כבלים, מתגים וראוטרים</li>
-          <li><strong>אבחון וייעוץ</strong> - תכנון מערכת תקשורת למשרדים ולבתים פרטיים</li>
-        </ul>
-        <p>
-          אנו מאמינים בהתאמה אישית לכל לקוח, ולכן תמיד נשמח לייעץ ולמצוא יחד
-          את הפתרון המושלם עבורך.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <!-- כפתור נגישות כ-button -->
-  <button
-    type="button"
-    class="accessibility-button"
-    aria-label="פתח תפריט נגישות"
-    onclick="toggleAccessibilityMenu()"
-  >
-    🔍 אפשרויות נגישות
-  </button>
-
-  <!-- תפריט הנגישות -->
-  <div id="accessibilityMenu" class="accessibility-menu" aria-label="תפריט נגישות">
-    <h2>כלי נגישות</h2>
-    <!-- עיצוב צבעים וניגודיות -->
-    <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
-    <button onclick="toggleInverse()">ניגודיות הפוכה</button>
-    <button onclick="toggleGrayScale()">גווני אפור</button>
-    <button onclick="toggleBlackWhite()">שחור לבן</button>
-
-    <!-- שינוי גודל גופן / ריווח -->
-    <div class="row">
-      <button onclick="adjustFontSize(-10)">- גודל גופן</button>
-      <button onclick="adjustFontSize(10)">+ גודל גופן</button>
+  <section id="about">
+    <h2>אודות</h2>
+    <div class="content">
+      <p>
+        אנחנו צוות מקצועי ובעל ניסיון רב בתחום <strong>התקשורת</strong>
+        והחשמל. את הפעילות שלנו התחלנו מתוך הרצון לתת מענה כולל ללקוחות,
+        החל מהתקנת קווי רשת ופתרונות Wi-Fi ועד לפרויקטים מורכבים של ניהול
+        תשתיות באתרים מסחריים וחניונים גדולים. מה שמייחד אותנו הוא השירות
+        האישי, המהיר והמקצועי לכל לקוח.
+      </p>
     </div>
-    <div class="row">
-      <button onclick="adjustWordSpacing(-1)">- רווח מילים</button>
-      <button onclick="adjustWordSpacing(1)">+ רווח מילים</button>
+  </section>
+
+  <section id="services">
+    <h2>שירותים</h2>
+    <div class="content">
+      <ul>
+        <li><strong>התקנת רשת ביתית</strong> - חיבור מהיר ואמין בכל חדר</li>
+        <li><strong>פתרונות Wi-Fi לחניונים</strong> - פריסה חכמה עם ניהול עומסים</li>
+        <li><strong>שדרוג תשתיות</strong> - החלפת כבלים, מתגים וראוטרים</li>
+        <li><strong>אבחון וייעוץ</strong> - תכנון מערכת תקשורת למשרדים ולבתים פרטיים</li>
+      </ul>
+      <p>
+        אנו מאמינים בהתאמה אישית לכל לקוח, ולכן תמיד נשמח לייעץ ולמצוא יחד
+        את הפתרון המושלם עבורך.
+      </p>
     </div>
-    <div class="row">
-      <button onclick="adjustLetterSpacing(-1)">- רווח אותיות</button>
-      <button onclick="adjustLetterSpacing(1)">+ רווח אותיות</button>
-    </div>
+  </section>
+</main>
 
-    <!-- פונקציות מתקדמות -->
-    <button onclick="toggleReadableFont()">גופן קריא</button>
-    <button onclick="toggleHighlightHeadings()">הדגשת כותרות</button>
-    <button onclick="toggleHighlightLinks()">הדגשת קישורים</button>
-    <button onclick="toggleNoAnimations()">ביטול אנימציות</button>
+<!-- כפתור נגישות כ-button -->
+<button
+  type="button"
+  class="accessibility-button"
+  aria-label="פתח תפריט נגישות"
+  onclick="toggleAccessibilityMenu()"
+>
+  🔍 אפשרויות נגישות
+</button>
 
-    <!-- הקראת טקסט -->
-    <button onclick="speakText()">🔊 הקראת טקסט</button>
-    <button onclick="speakTextHebrew()">🔊 הקראת בעברית</button>
+<!-- תפריט הנגישות -->
+<div id="accessibilityMenu" class="accessibility-menu" aria-label="תפריט נגישות">
+  <h2>כלי נגישות</h2>
+  <!-- עיצוב צבעים וניגודיות -->
+  <button onclick="toggleHighContrast()">ניגודיות גבוהה</button>
+  <button onclick="toggleInverse()">ניגודיות הפוכה</button>
+  <button onclick="toggleGrayScale()">גווני אפור</button>
+  <button onclick="toggleBlackWhite()">שחור לבן</button>
 
-    <!-- סמנים גדולים -->
-    <button onclick="toggleBigCursorDark()">סמן גדול כהה</button>
-    <button onclick="toggleBigCursorLight()">סמן גדול בהיר</button>
-
-    <!-- איפוס -->
-    <button onclick="resetAccessibility()">♻️ איפוס הגדרות</button>
-
-    <!-- סגירה -->
-    <button onclick="toggleAccessibilityMenu()">❌ סגור</button>
+  <!-- שינוי גודל גופן / ריווח -->
+  <div class="row">
+    <button onclick="adjustFontSize(-10)">- גודל גופן</button>
+    <button onclick="adjustFontSize(10)">+ גודל גופן</button>
+  </div>
+  <div class="row">
+    <button onclick="adjustWordSpacing(-1)">- רווח מילים</button>
+    <button onclick="adjustWordSpacing(1)">+ רווח מילים</button>
+  </div>
+  <div class="row">
+    <button onclick="adjustLetterSpacing(-1)">- רווח אותיות</button>
+    <button onclick="adjustLetterSpacing(1)">+ רווח אותיות</button>
   </div>
 
-  <footer role="contentinfo">
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-around; max-width: 900px; margin: 0 auto; padding: 20px 0;">
-      <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
-        <h4>שירותים נוספים</h4>
-        <ul style="list-style: none; padding: 0;">
-          <li><a href="#" onclick="trackEvent('Footer', 'Service Click', 'Home WiFi');">פתרונות Wi-Fi ביתיים</a></li>
-          <li><a href="#" onclick="trackEvent('Footer', 'Service Click', 'Business Network');">רשתות לעסקים</a></li>
-          <li><a href="#" onclick="trackEvent('Footer', 'Service Click', 'Security');">אבטחת רשת</a></li>
-        </ul>
-      </div>
-      <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
-        <h4>מידע נוסף</h4>
-        <ul style="list-style: none; padding: 0;">
-          <li><a href="#" onclick="trackEvent('Footer', 'Info Click', 'About');">אודות</a></li>
-          <li><a href="#" onclick="trackEvent('Footer', 'Info Click', 'Contact');">צור קשר</a></li>
-          <li><a href="#" onclick="trackEvent('Footer', 'Info Click', 'Blog');">מאמרים מקצועיים</a></li>
-        </ul>
-      </div>
-      <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
-        <h4>עקבו אחרינו</h4>
-        <div style="display: flex; gap: 10px;">
-          <a href="#" onclick="trackEvent('Social', 'Click', 'Facebook');" aria-label="Facebook">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffcc00"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C15.9 21.59 18.03 20.4 19.6 18.68C21.16 16.96 22.04 14.8 22.04 12.56C22.04 6.53 17.54 2.04 12 2.04Z"/></svg>
-          </a>
-          <a href="#" onclick="trackEvent('Social', 'Click', 'Instagram');" aria-label="Instagram">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffcc00"><path d="M12,2.16c3.2,0,3.58,0,4.85.08,3.25.15,4.77,1.69,4.92,4.92.06,1.27.08,1.65.08,4.85s0,3.58-.08,4.85c-.15,3.23-1.66,4.77-4.92,4.92-1.27.06-1.65.08-4.85.08s-3.58,0-4.85-.08c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.08-1.65-.08-4.85s0-3.58.08-4.85C2.38,3.92,3.9,2.38,7.15,2.23,8.42,2.18,8.8,2.16,12,2.16ZM12,0C8.74,0,8.33,0,7.05.07c-4.35.2-6.78,2.62-6.98,6.98C0,8.33,0,8.74,0,12s0,3.67.07,4.95c.2,4.36,2.63,6.78,6.98,6.98C8.33,24,8.74,24,12,24s3.67,0,4.95-.07c4.35-.2,6.78-2.62,6.98-6.98C24,15.67,24,15.26,24,12s0-3.67-.07-4.95c-.2-4.35-2.63-6.78-6.98-6.98C15.67,0,15.26,0,12,0Zm0,5.84A6.16,6.16,0,1,0,18.16,12,6.16,6.16,0,0,0,12,5.84ZM12,16a4,4,0,1,1,4-4A4,4,0,0,1,12,16ZM18.41,4.15a1.44,1.44,0,1,0,1.43,1.44A1.44,1.44,0,0,0,18.41,4.15Z"/></svg>
-          </a>
-          <a href="#" onclick="trackEvent('Social', 'Click', 'LinkedIn');" aria-label="LinkedIn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffcc00"><path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z"/></svg>
-          </a>
-        </div>
+  <!-- פונקציות מתקדמות -->
+  <button onclick="toggleReadableFont()">גופן קריא</button>
+  <button onclick="toggleHighlightHeadings()">הדגשת כותרות</button>
+  <button onclick="toggleHighlightLinks()">הדגשת קישורים</button>
+  <button onclick="toggleNoAnimations()">ביטול אנימציות</button>
+
+  <!-- הקראת טקסט -->
+  <button onclick="speakText()">🔊 הקראת טקסט</button>
+  <button onclick="speakTextHebrew()">🔊 הקראת בעברית</button>
+
+  <!-- סמנים גדולים -->
+  <button onclick="toggleBigCursorDark()">סמן גדול כהה</button>
+  <button onclick="toggleBigCursorLight()">סמן גדול בהיר</button>
+
+  <!-- איפוס -->
+  <button onclick="resetAccessibility()">♻️ איפוס הגדרות</button>
+
+  <!-- סגירה -->
+  <button onclick="toggleAccessibilityMenu()">❌ סגור</button>
+</div>
+
+<footer role="contentinfo">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-around; max-width: 900px; margin: 0 auto; padding: 20px 0;">
+    <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
+      <h4>שירותים נוספים</h4>
+      <ul style="list-style: none; padding: 0;">
+        <li><a href="#" onclick="trackEvent('Footer', 'Service Click', 'Home WiFi');">פתרונות Wi-Fi ביתיים</a></li>
+        <li><a href="#" onclick="trackEvent('Footer', 'Service Click', 'Business Network');">רשתות לעסקים</a></li>
+        <li><a href="#" onclick="trackEvent('Footer', 'Service Click', 'Security');">אבטחת רשת</a></li>
+      </ul>
+    </div>
+    <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
+      <h4>מידע נוסף</h4>
+      <ul style="list-style: none; padding: 0;">
+        <li><a href="#" onclick="trackEvent('Footer', 'Info Click', 'About');">אודות</a></li>
+        <li><a href="#" onclick="trackEvent('Footer', 'Info Click', 'Contact');">צור קשר</a></li>
+        <li><a href="#" onclick="trackEvent('Footer', 'Info Click', 'Blog');">מאמרים מקצועיים</a></li>
+      </ul>
+    </div>
+    <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
+      <h4>עקבו אחרינו</h4>
+      <div style="display: flex; gap: 10px;">
+        <a href="#" onclick="trackEvent('Social', 'Click', 'Facebook');" aria-label="Facebook">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffcc00"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C15.9 21.59 18.03 20.4 19.6 18.68C21.16 16.96 22.04 14.8 22.04 12.56C22.04 6.53 17.54 2.04 12 2.04Z"/></svg>
+        </a>
+        <a href="#" onclick="trackEvent('Social', 'Click', 'Instagram');" aria-label="Instagram">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffcc00"><path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z"/></svg>
+        </a>
+        <a href="#" onclick="trackEvent('Social', 'Click', 'LinkedIn');" aria-label="LinkedIn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffcc00"><path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z"/></svg>
+        </a>
       </div>
     </div>
-  
-    <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; margin-top: 10px;">
-      <p>&copy; 2025 שירותי התקנת רשת. כל הזכויות שמורות.</p>
-      
-      <!-- כפתורי שיתוף -->
-      <div style="margin: 15px 0;">
-        <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourwebsite.com" onclick="window.open(this.href, 'FacebookShare', 'width=650,height=450'); trackEvent('Share', 'Facebook', 'Footer'); return false;" style="margin: 0 5px; color: #ffcc00;">שתף בפייסבוק</a>
-        <a href="https://twitter.com/intent/tweet?url=https://yourwebsite.com&text=התקנת רשת מקצועית לבית ולעסק" onclick="window.open(this.href, 'TwitterShare', 'width=650,height=450'); trackEvent('Share', 'Twitter', 'Footer'); return false;" style="margin: 0 5px; color: #ffcc00;">שתף בטוויטר</a>
-        <a href="https://api.whatsapp.com/send?text=התקנת רשת מקצועית לבית ולעסק https://yourwebsite.com" onclick="window.open(this.href, 'WhatsAppShare', 'width=650,height=450'); trackEvent('Share', 'WhatsApp', 'Footer'); return false;" style="margin: 0 5px; color: #ffcc00;">שתף בוואטסאפ</a>
-      </div>
-      
-      <!-- מכשיר מעקב נוסף - קריאה וקליק -->
-      <script>
-        // מעקב אחר צפייה במרכיבים שונים בדף
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              trackEvent('Visibility', 'Element Viewed', entry.target.id || entry.target.className);
-              observer.unobserve(entry.target); // להפסיק לעקוב אחרי שנצפה פעם אחת
-            }
-          });
-        }, { threshold: 0.7 }); // 70% מהאלמנט נראה
-        
-        // הוספת מעקב לכל האלמנטים החשובים
-        document.addEventListener('DOMContentLoaded', () => {
-          document.querySelectorAll('section, .contact-form, .btn').forEach(element => {
-            observer.observe(element);
-          });
+  </div>
+
+  <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; margin-top: 10px;">
+    <p>&copy; 2025 שירותי התקנת רשת. כל הזכויות שמורות.</p>
+    
+    <!-- כפתורי שיתוף -->
+    <div style="margin: 15px 0;">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourwebsite.com" onclick="window.open(this.href, 'FacebookShare', 'width=650,height=450'); trackEvent('Share', 'Facebook', 'Footer'); return false;" style="margin: 0 5px; color: #ffcc00;">שתף בפייסבוק</a>
+      <a href="https://twitter.com/intent/tweet?url=https://yourwebsite.com&text=התקנת רשת מקצועית לבית ולעסק" onclick="window.open(this.href, 'TwitterShare', 'width=650,height=450'); trackEvent('Share', 'Twitter', 'Footer'); return false;" style="margin: 0 5px; color: #ffcc00;">שתף בטוויטר</a>
+      <a href="https://api.whatsapp.com/send?text=התקנת רשת מקצועית לבית ולעסק https://yourwebsite.com" onclick="window.open(this.href, 'WhatsAppShare', 'width=650,height=450'); trackEvent('Share', 'WhatsApp', 'Footer'); return false;" style="margin: 0 5px; color: #ffcc00;">שתף בוואטסאפ</a>
+    </div>
+    
+    <!-- מכשיר מעקב נוסף - קריאה וקליק -->
+    <script>
+      // מעקב אחר צפייה במרכיבים שונים בדף
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            trackEvent('Visibility', 'Element Viewed', entry.target.id || entry.target.className);
+            observer.unobserve(entry.target); // להפסיק לעקוב אחרי שנצפה פעם אחת
+          }
         });
-      </script>
-    </div>
-  </footer>
+      }, { threshold: 0.7 }); // 70% מהאלמנט נראה
+      
+      // הוספת מעקב לכל האלמנטים החשובים
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('section, .contact-form, .btn').forEach(element => {
+          observer.observe(element);
+        });
+      });
+    </script>
+  </div>
+</footer>
 </body>
 </html>
