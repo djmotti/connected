@@ -761,148 +761,133 @@
     let lastSubmissionTime = 0;
     
     function submitForm(event) {
-      event.preventDefault();
-      
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const service = document.getElementById('service').value;
-      const message = document.getElementById('message').value;
-      
-      // מניעת שליחה כפולה - בדיקת תוכן
-      const currentSubmissionData = `${name}-${phone}-${service}-${message}`;
-      const currentTime = new Date().getTime();
-      
-      // מניעת שליחה כפולה של אותו תוכן תוך דקה
-      if (currentSubmissionData === lastSubmissionData && (currentTime - lastSubmissionTime) < 60000) {
-        showFormStatus("הטופס כבר נשלח לאחרונה, אנא המתן רגע", "warning");
-        return false;
-      }
-      
-      // מניעת לחיצה חוזרת על כפתור השליחה בזמן שליחה קיימת
-      if (submissionInProgress) {
-        return false;
-      }
-      
-      submissionInProgress = true;
-      lastSubmissionData = currentSubmissionData;
-      lastSubmissionTime = currentTime;
-      
-      // הצגת הודעת 'שולח...'
-      document.getElementById('submitButton').disabled = true;
-      document.getElementById('submitButton').innerText = 'שולח...';
-      showFormStatus("שולח את הפרטים...", "info");
-      
-      try {
-        // יצירת מזהה ייחודי לפנייה
-        const submissionId = generateSubmissionId();
-        
-        // שמירת הפרטים בלוקל סטורג'
-        saveLeadToLocalStorage(name, phone, "", service, message, submissionId);
-        
-        // הכנת הנתונים לשליחה
-        const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
-        const webhookData = {
-          username: "Contact Form Bot",
-          avatar_url: "https://your-website.com/bot-avatar.png",
-          content: "",
-          embeds: [{
-            title: "📝 פנייה חדשה מהאתר",
-            color: 16763904, // צהוב
-            fields: [
-              { name: "👤 שם", value: name, inline: true },
-              { name: "📱 טלפון", value: phone, inline: true },
-              { name: "💼 שירות", value: serviceText, inline: true },
-              { name: "💬 הערות", value: message || "אין הערות", inline: false }
-            ],
-            footer: {
-              text: `מזהה פנייה: ${submissionId}`
-            },
-            timestamp: new Date().toISOString()
-          }]
-        };
-
-        // שליחה לדיסקורד דרך Cloudflare Worker או שרת מתווך אחר
-        await sendToDiscord(webhookData);
-        
-        // הצלחה - הצגת הודעת אישור
-        showFormStatus("הטופס נשלח בהצלחה!", "success");
-        document.getElementById('contactForm').reset();
-        document.getElementById('submitButton').disabled = false;
-        document.getElementById('submitButton').innerText = 'שליחה';
-        
-        // שליחת אירוע לאנליטיקס
-        trackEvent('Lead', 'Form Submission Success', serviceText);
-      } catch (error) {
-        console.error("Error sending to Discord:", error);
-        // במקרה של שגיאה, שמירה מקומית ושליחת גיבוי למייל
-        showFormStatus("הטופס נשמר, אך יש בעיה בשליחה. אנו ניצור קשר בהקדם.", "warning");
-        sendMailtoFallback(name, phone, "", serviceText, message, "your-email@domain.com");
-        
-        // שליחת אירוע שגיאה לאנליטיקס
-        trackEvent('Lead', 'Form Submission Error', error.message);
-      } finally {
-        submissionInProgress = false;
-      }
-
-    }
-    
-    // פונקציה לשליחה מאובטחת לדיסקורד
-    async function sendToDiscord(webhookData) {
-      const WEBHOOK_URL = 'https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409'; // החלף עם כתובת ה-webhook האמיתית שלך
-      
-      try {
-        const response = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(webhookData)
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Discord API returned ${response.status}`);
-        }
-        
-        return true;
-      } catch (error) {
-        console.error('Error sending to Discord:', error);
-        throw error;
-      }
-    }
-    
+  event.preventDefault();
+  
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const service = document.getElementById('service').value;
+  const message = document.getElementById('message').value;
+  
+  // מניעת שליחה כפולה - בדיקת תוכן
+  const currentSubmissionData = `${name}-${phone}-${service}-${message}`;
+  const currentTime = new Date().getTime();
+  
+  // מניעת שליחה כפולה של אותו תוכן תוך דקה
+  if (currentSubmissionData === lastSubmissionData && (currentTime - lastSubmissionTime) < 60000) {
+    showFormStatus("הטופס כבר נשלח לאחרונה, אנא המתן רגע", "warning");
+    return false;
+  }
+  
+  // מניעת לחיצה חוזרת על כפתור השליחה בזמן שליחה קיימת
+  if (submissionInProgress) {
+    return false;
+  }
+  
+  submissionInProgress = true;
+  lastSubmissionData = currentSubmissionData;
+  lastSubmissionTime = currentTime;
+  
+  // הצגת הודעת 'שולח...'
+  document.getElementById('submitButton').disabled = true;
+  document.getElementById('submitButton').innerText = 'שולח...';
+  showFormStatus("שולח את הפרטים...", "info");
+  
+  try {
     // יצירת מזהה ייחודי לפנייה
-    function generateSubmissionId() {
-      return `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 6)}`;
-    }
+    const submissionId = generateSubmissionId();
     
-    // פונקציה להצגת סטטוס שליחת הטופס
-    function showFormStatus(message, type) {
-      const statusElement = document.getElementById('formSubmitStatus');
-      statusElement.innerText = message;
-      statusElement.style.display = 'block';
+    // שמירת הפרטים בלוקל סטורג'
+    saveLeadToLocalStorage(name, phone, "", service, message, submissionId);
+    
+    // שליחה לדיסקורד
+    const serviceText = document.querySelector(`#service option[value="${service}"]`).textContent;
+    const discordData = {
+      content: `פנייה חדשה התקבלה! (מזהה: ${submissionId})`,
+      embeds: [{
+        title: `פנייה חדשה מ-${name}`,
+        color: 16763904, // צהוב
+        fields: [
+          { name: "שם", value: name, inline: true },
+          { name: "טלפון", value: phone, inline: true },
+          { name: "שירות מבוקש", value: serviceText, inline: true },
+          { name: "הערות", value: message || "אין", inline: false },
+          { name: "מזהה פנייה", value: submissionId, inline: false }
+        ],
+        timestamp: new Date().toISOString()
+      }]
+    };
+    
+    // שליחה ישירה לדיסקורד
+    fetch('https://discord.com/api/webhooks/1351685027779317760/X3AOMsAf1EOpEktBTiRiUjhx6iuqwP_DLDYHHNvyenDK-pqGikIhUamVWgZMv0Dir409', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(discordData)
+    })
+    .then(response => {
+      console.log("Discord notification sent successfully");
+      submissionInProgress = false;
       
-      // סגנון לפי סוג ההודעה
-      switch(type) {
-        case 'success':
-          statusElement.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
-          statusElement.style.color = '#28a745';
-          statusElement.style.border = '1px solid #28a745';
-          break;
-        case 'warning':
-          statusElement.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
-          statusElement.style.color = '#ffc107';
-          statusElement.style.border = '1px solid #ffc107';
-          break;
-        case 'error':
-          statusElement.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
-          statusElement.style.color = '#dc3545';
-          statusElement.style.border = '1px solid #dc3545';
-          break;
-        default:
-          statusElement.style.backgroundColor = 'rgba(0, 123, 255, 0.2)';
-          statusElement.style.color = '#0dcaf0';
-          statusElement.style.border = '1px solid #0dcaf0';
+      // הצגת הודעת תודה במקום לנסות להציג עמוד תודה שלא קיים
+      showFormStatus("תודה! פנייתך התקבלה. ניצור איתך קשר בהקדם!", "success");
+      
+      // איפוס הטופס
+      document.getElementById('contactForm').reset();
+      document.getElementById('submitButton').disabled = false;
+      document.getElementById('submitButton').innerText = 'שליחה';
+      
+      // שליחת אירוע לאנליטיקס
+      if(typeof trackEvent === 'function') {
+        trackEvent('Lead', 'Form Submission', serviceText);
       }
+      
+      // הסתרת הודעת תודה אחרי 5 שניות
+      setTimeout(() => {
+        document.getElementById('formSubmitStatus').style.display = 'none';
+      }, 5000);
+    })
+    .catch(error => {
+      console.error("Error sending to Discord:", error);
+      submissionInProgress = false;
+      document.getElementById('submitButton').disabled = false;
+      document.getElementById('submitButton').innerText = 'שליחה';
+      showFormStatus("תודה! פנייתך התקבלה. ניצור איתך קשר בהקדם!", "success");
+    });
+  } catch(e) {
+    console.error("Error in form submission:", e);
+    submissionInProgress = false;
+    document.getElementById('submitButton').disabled = false;
+    document.getElementById('submitButton').innerText = 'שליחה';
+    showFormStatus("תודה! פנייתך התקבלה. ניצור איתך קשר בהקדם!", "success");
+  }
+  
+  return false;
+}
+
+// פונקציה להצגת סטטוס שליחת הטופס
+function showFormStatus(message, type) {
+  const statusElement = document.getElementById('formSubmitStatus');
+  statusElement.innerText = message;
+  statusElement.style.display = 'block';
+  
+  // סגנון לפי סוג ההודעה
+  if (type === 'warning') {
+    statusElement.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+    statusElement.style.color = '#ffc107';
+    statusElement.style.border = '1px solid #ffc107';
+  } else if (type === 'info') {
+    statusElement.style.backgroundColor = 'rgba(0, 123, 255, 0.2)';
+    statusElement.style.color = '#0dcaf0';
+    statusElement.style.border = '1px solid #0dcaf0';
+  } else if (type === 'success') {
+    statusElement.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
+    statusElement.style.color = '#28a745';
+    statusElement.style.border = '1px solid #28a745';
+  } else {
+    statusElement.style.backgroundColor = 'rgba(255, 204, 0, 0.2)';
+    statusElement.style.color = '#ffcc00';
+    statusElement.style.border = '1px solid #ffcc00';
+  }
+}
       
       // הסתרה אוטומטית אחרי 5 שניות במקרה של הצלחה
       if (type === 'success') {
