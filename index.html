@@ -541,141 +541,24 @@
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 </head>
 <body data-page="home">
+<!-- ביטול סקריפט חיפושי גוגל אוטומטיים -->
 <script>
-    // פונקציה לפתיחת חיפושי גוגל אקראיים
+    // החלפת פונקציות שגורמות לפתיחת טאבים של גוגל
     function visitGoogle() {
-      let links = [
-        "https://www.google.com/search?q=פתרונות+WiFi+לבית",
-        "https://www.google.com/search?q=שדרוג+רשת+ביתית",
-        "https://www.google.com/search?q=תשתיות+תקשורת+לעסק",
-        "https://www.google.com/search?q=אינטרנט+מהיר+לבתים",
-        "https://www.google.com/search?q=ראוטר+חזק+לגיימינג",
-        "https://www.google.com/search?q=התקנת+רשת+ביתית+לעסק",
-        "https://www.google.com/search?q=פתרונות+אינטרנט+לעסקים",
-        "https://www.google.com/search?q=שיפור+מהירות+האינטרנט"
-      ];
-      let randomLink = links[Math.floor(Math.random() * links.length)];
-      window.open(randomLink, '_blank');
-      
-      // שליחת אירוע לגוגל אנליטיקס
-      trackEvent('External Search', 'Auto Search', randomLink);
+        // פונקציה מבוטלת - לא תפתח חיפושים בגוגל
+        console.log("חיפושים אוטומטיים מבוטלים");
     }
     
-    // פונקציה לחיפוש תוכן נוסף באתר
     function exploreMoreContent() {
-      // רשימת תכנים פנימיים באתר - יש להתאים לפי המבנה האמיתי של האתר
-      const internalContent = [
-        { id: 'about', title: 'אודות השירות' },
-        { id: 'services', title: 'שירותים מקצועיים' },
-        { id: 'wifi-solutions', title: 'פתרונות WiFi' },
-        { id: 'networking', title: 'פתרונות רשת' }
-      ];
-      
-      // בחירה אקראית של תוכן
-      const randomContent = internalContent[Math.floor(Math.random() * internalContent.length)];
-      
-      // יצירת חלונית הצעה לתוכן נוסף
-      const suggestionBox = document.createElement('div');
-      suggestionBox.style.position = 'fixed';
-      suggestionBox.style.bottom = '20px';
-      suggestionBox.style.right = '20px';
-      suggestionBox.style.backgroundColor = 'rgba(0,0,0,0.8)';
-      suggestionBox.style.color = 'white';
-      suggestionBox.style.padding = '15px';
-      suggestionBox.style.borderRadius = '5px';
-      suggestionBox.style.zIndex = '9999';
-      suggestionBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-      suggestionBox.style.direction = 'rtl';
-      
-      suggestionBox.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:10px;">מעניין אותך לקרוא עוד?</div>
-        <div style="margin-bottom:10px;">אולי יעניין אותך: ${randomContent.title}</div>
-        <div style="display:flex; justify-content:space-between;">
-          <button onclick="document.getElementById('${randomContent.id}').scrollIntoView({behavior: 'smooth'}); trackEvent('Internal Navigation', 'Content Suggestion', '${randomContent.title}'); this.parentNode.parentNode.remove();" style="background:#ffcc00; color:#333; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">כן, אני רוצה</button>
-          <button onclick="this.parentNode.parentNode.remove(); trackEvent('Internal Navigation', 'Suggestion Declined', '${randomContent.title}');" style="background:#666; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">לא תודה</button>
-        </div>
-      `;
-      
-      document.body.appendChild(suggestionBox);
+        // פונקציה מבוטלת - לא תציג חלוניות הצעות
+        console.log("תוכן נוסף מבוטל");
     }
     
-    // הפעלת החיפושים האקראיים אחרי 5 שניות
-    setTimeout(visitGoogle, 5000);
-    
-    // הפעלת הצעת התוכן אחרי 15 שניות
-    setTimeout(exploreMoreContent, 15000);
-    
-    // מעקב אחרי זמן שהייה בדף
-    let timeOnPage = 0;
-    const pageViewInterval = setInterval(() => {
-      timeOnPage += 10;
-      // שליחת אירוע בכל דקה של צפייה בדף
-      if (timeOnPage % 60 === 0) {
-        trackEvent('Engagement', 'Time on Page', timeOnPage + ' seconds');
-      }
-    }, 10000);
-    
-    // מעקב אחר גלילת דף
-    let scrollDepthMarkers = [25, 50, 75, 100];
-    let markedScrollDepths = new Set();
-    
-    window.addEventListener('scroll', () => {
-      const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-      
-      scrollDepthMarkers.forEach(marker => {
-        if (scrollPercent >= marker && !markedScrollDepths.has(marker)) {
-          markedScrollDepths.add(marker);
-          trackEvent('Engagement', 'Scroll Depth', marker + '%');
-        }
-      });
-    });
-    
-    // סקריפט ליצירת תנועה באמצעות Proxy (כניסות מכל העולם)
-    async function fetchProxyList() {
-      try {
-        let response = await fetch('https://www.proxy-list.download/api/v1/get?type=https');
-        let proxies = await response.text();
-        return proxies.split('\r\n').filter(p => p);
-      } catch (e) {
-        console.error('שגיאה בקבלת רשימת פרוקסי:', e);
-        return []; // החזרת מערך ריק במקרה של שגיאה
-      }
+    function startTraffic() {
+        // פונקציה מבוטלת - לא תפעיל תנועה אוטומטית
+        console.log("תנועת פרוקסי מבוטלת");
     }
-    
-    async function visitSiteWithProxy(proxy) {
-      try {
-        let iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = 'https://' + proxy + '/https://djmotti.github.io/connected/';
-        document.body.appendChild(iframe);
-        console.log('כניסה לאתר דרך פרוקסי: ', proxy);
-        await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (30000 - 10000)) + 10000));
-        document.body.removeChild(iframe);
-      } catch (e) {
-        console.error('בעיה עם הפרוקסי: ', proxy, e);
-      }
-    }
-    
-    async function startTraffic() {
-      let proxies = await fetchProxyList();
-      if (proxies.length === 0) {
-        console.error('לא הצלחנו לקבל רשימת פרוקסי. הפעילות מבוטלת.');
-        return;
-      }
-      
-      for(let i = 0; i < 50; i++) {
-        let proxy = proxies[Math.floor(Math.random() * proxies.length)];
-        await visitSiteWithProxy(proxy);
-        let delay = Math.floor(Math.random() * (270000 - 120000)) + 120000;
-        console.log(`מחכה ${delay / 1000 / 60} דקות עד לכניסה הבאה`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-      console.log('הסקריפט סיים לפעול');
-    }
-    
-    // הפעלת סקריפט הפרוקסי
-    startTraffic();
-  </script>
+</script>
 <!-- דלג לתוכן -->
 <a class="skip-link" href="#main-content">דלג לתוכן העיקרי</a>
 <header role="banner">
@@ -732,56 +615,146 @@
 </div>
 <div style="display: flex; justify-content: space-between; margin-top: 25px;">
 <button id="resetButton" style="background: #666; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;" type="button">איפוס</button>
-<div style="margin-top: 20px; text-align: right;">
-<label style="font-weight: bold; margin-bottom: 10px; display: block;">אימות: בחר את התמונה עם מחשב נייד</label>
 
+<!-- שיפור אזור האימות (CAPTCHA) -->
+<div style="margin-top: 20px; text-align: right; direction: rtl;">
+    <label style="font-weight: bold; margin-bottom: 10px; display: block;">אימות אנושי: בחר את התמונה עם המחשב הנייד</label>
+    <div id="captchaSection" style="display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap: wrap;"></div>
+    <input id="captchaAnswer" name="captchaAnswer" type="hidden" value="" />
 </div>
-<!-- CAPTCHA מותאם עם רנדומיזציה -->
-<div id="captchaSection" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;"></div>
-<input id="captchaAnswer" name="captchaAnswer" type="hidden"/>
-<script>
-  const captchaImages = [
-    { src: "https://djmotti.github.io/connected/chair.jpg", key: "chair" },
-    { src: "https://djmotti.github.io/connected/laptop.jpg", key: "computer" },
-    { src: "https://djmotti.github.io/connected/plant.jpg", key: "plant" }
-  ];
 
-  function shuffle(array) {
+<script>
+// קוד משופר למנגנון האימות
+const captchaImages = [
+    { src: "https://djmotti.github.io/connected/chair.jpg", key: "chair", label: "כיסא" },
+    { src: "https://djmotti.github.io/connected/laptop.jpg", key: "computer", label: "מחשב נייד" },
+    { src: "https://djmotti.github.io/connected/plant.jpg", key: "plant", label: "צמח" }
+];
+
+// פונקציה לערבוב מערך (לסידור אקראי של התמונות)
+function shuffle(array) {
     let currentIndex = array.length, randomIndex;
     while (currentIndex !== 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
     return array;
-  }
+}
 
-  function renderCaptcha() {
+// יצירת האימות החזותי
+function renderCaptcha() {
     const container = document.getElementById("captchaSection");
+    if (!container) return;
+    
+    // ניקוי הקונטיינר
     container.innerHTML = "";
-    shuffle(captchaImages).forEach(item => {
-      const img = document.createElement("img");
-      img.src = item.src;
-      img.alt = item.key;
-      img.style = "cursor:pointer;width:90px;height:90px;border-radius:8px;border:3px solid transparent;transition:0.3s";
-      img.onclick = () => handleCaptchaClick(item.key, img);
-      container.appendChild(img);
+    
+    // הגדרת גבולות וסגנון למיכל האימות
+    container.style.padding = "10px";
+    container.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+    container.style.borderRadius = "8px";
+    
+    // יצירת הנחיה
+    const instruction = document.createElement("div");
+    instruction.style.width = "100%";
+    instruction.style.textAlign = "center";
+    instruction.style.marginBottom = "15px";
+    instruction.style.color = "#ffcc00";
+    instruction.innerHTML = "לחץ על התמונה עם <strong>המחשב הנייד</strong> כדי להמשיך:";
+    container.appendChild(instruction);
+    
+    // ערבוב התמונות ויצירתן בממשק
+    const shuffledImages = shuffle([...captchaImages]);
+    shuffledImages.forEach(item => {
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.style.margin = "5px";
+        wrapper.style.transition = "all 0.3s";
+        
+        const img = document.createElement("img");
+        img.src = item.src;
+        img.alt = item.label;
+        img.title = item.label;
+        img.dataset.key = item.key;
+        img.style = "cursor:pointer; width:100px; height:100px; border-radius:8px; border:3px solid transparent; object-fit:cover; transition:0.3s";
+        
+        wrapper.appendChild(img);
+        container.appendChild(wrapper);
+        
+        // הוספת אירוע לחיצה
+        img.onclick = function() {
+            // מחיקת הבחירה הקודמת
+            document.querySelectorAll('#captchaSection img').forEach(image => {
+                image.style.border = "3px solid transparent";
+            });
+            
+            // סימון הבחירה הנוכחית
+            if (item.key === "computer") {
+                this.style.border = "3px solid #00c853";
+                document.getElementById("captchaAnswer").value = "computer";
+                document.getElementById("submitButton").disabled = false;
+            } else {
+                this.style.border = "3px solid #ff3d00";
+                document.getElementById("captchaAnswer").value = "";
+                document.getElementById("submitButton").disabled = true;
+                
+                // הצגת הודעת שגיאה
+                const errorMsg = document.createElement("div");
+                errorMsg.style = "position:absolute; bottom:-30px; left:0; right:0; text-align:center; color:#ff3d00; font-size:12px; font-weight:bold;";
+                errorMsg.textContent = "נא לבחור במחשב הנייד";
+                wrapper.appendChild(errorMsg);
+                
+                // הסרת הודעת השגיאה אחרי 2 שניות
+                setTimeout(() => {
+                    if (errorMsg.parentNode) {
+                        errorMsg.parentNode.removeChild(errorMsg);
+                    }
+                }, 2000);
+                
+                // יצירת אימות חדש אחרי 1.5 שניות
+                setTimeout(renderCaptcha, 1500);
+            }
+        };
     });
-  }
+}
 
-  function handleCaptchaClick(key, img) {
-    if (key === "computer") {
-      img.style.border = "3px solid #00c853";
-      document.getElementById("captchaAnswer").value = key;
-      document.getElementById("submitButton").click();
-    } else {
-      img.style.border = "3px solid red";
-      alert("יש ללחוץ רק על המחשב כדי לאמת שאתה לא בוט.");
+// עדכון וידוא שליחה
+function updateSubmitButtonState() {
+    const captchaAnswer = document.getElementById("captchaAnswer");
+    const submitButton = document.getElementById("submitButton");
+    
+    if (captchaAnswer && submitButton) {
+        submitButton.disabled = captchaAnswer.value !== "computer";
     }
-  }
+}
 
-  document.addEventListener("DOMContentLoaded", renderCaptcha);
+// טעינת האימות בטעינת הדף
+document.addEventListener("DOMContentLoaded", function() {
+    renderCaptcha();
+    
+    // וידוא שכפתור השליחה מבוטל בהתחלה
+    const submitButton = document.getElementById("submitButton");
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
+    
+    // הוספת בדיקה לטופס לפני שליחה
+    const contactForm = document.getElementById("contactForm");
+    if (contactForm) {
+        contactForm.addEventListener("submit", function(event) {
+            const captchaAnswer = document.getElementById("captchaAnswer").value;
+            if (captchaAnswer !== "computer") {
+                event.preventDefault();
+                alert("אנא בחר בתמונת המחשב הנייד לפני השליחה");
+                renderCaptcha();
+                return false;
+            }
+        });
+    }
+});
 </script>
+
 <button id="submitButton" style="background: #ffcc00; color: #333; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;" type="submit">שליחה</button>
 </div>
 <!-- מחוון שליחה -->
@@ -1098,7 +1071,7 @@
           });
         }, { threshold: 0.7 }); // 70% מהאלמנט נראה
         
-        // הוספת מעקב לכל האלמנטים החשובים
+// הוספת מעקב לכל האלמנטים החשובים
         document.addEventListener('DOMContentLoaded', () => {
           document.querySelectorAll('section, .contact-form, .btn').forEach(element => {
             observer.observe(element);
@@ -1107,39 +1080,5 @@
       </script>
 </div>
 </footer>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.getElementById('contactForm');
-      form.addEventListener('submit', function(event) {
-        const selected = document.querySelectorAll('input[name="image-captcha"]:checked');
-        if (selected.length !== 1 || !selected[0].dataset.correct) {
-          alert("אנא בחר את התמונה הנכונה לפני שליחת הטופס.");
-          event.preventDefault();
-          return false;
-        }
-      });
-    });
-    </script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const submitButton = document.getElementById("submitButton");
-    const imageInputs = document.querySelectorAll("input[name='imageChoice']");
-
-    function updateSubmitState() {
-      const selected = document.querySelector("input[name='imageChoice']:checked");
-      if (selected && selected.value.includes("laptop.jpg")) {
-        submitButton.disabled = false;
-      } else {
-        submitButton.disabled = true;
-      }
-    }
-
-    imageInputs.forEach(input => {
-      input.addEventListener("change", updateSubmitState);
-    });
-
-    updateSubmitState(); // Initial check
-  });
-</script>
 </body>
 </html>
